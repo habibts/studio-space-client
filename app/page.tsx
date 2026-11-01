@@ -1,11 +1,9 @@
-import Navbar from "@/components/layout/Navbar";
-
-
+import HeroSlider from "@/components/home/HeroSlider";
 
 export default function Home() {
   return (
     <div>
-<Navbar />
+<HeroSlider />
     </div>
   );
 }
