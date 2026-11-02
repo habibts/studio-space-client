@@ -56,11 +56,11 @@ const quickLinks = [
 ];
 
 const categories = [
-  "Photo Studios",
-  "Sound Stages",
-  "Podcast Rooms",
-  "Music Suites",
-  "Art Workshops",
+  { name: "Photo Studios", value: "Photo Studio" },
+  { name: "Sound Stages", value: "Sound Stage" },
+  { name: "Podcast Rooms", value: "Podcast Room" },
+  { name: "Music Suites", value: "Music Suite" },
+  { name: "Art Workshops", value: "Art Workshop" },
 ];
 
 export default function Footer() {
@@ -143,13 +143,13 @@ export default function Footer() {
               Popular Categories
             </h3>
             <ul className="space-y-2.5">
-              {categories.map((c) => (
-                <li key={c}>
+              {categories.map((category) => (
+                <li key={category.value}>
                   <Link
-                    href={`/studios?category=${encodeURIComponent(c)}`}
+                    href={`/studios?category=${encodeURIComponent(category.value)}`}
                     className="text-sm text-gray-400 transition hover:text-amber-400"
                   >
-                    {c}
+                    {category.name}
                   </Link>
                 </li>
               ))}
