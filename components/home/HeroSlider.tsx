@@ -17,33 +17,33 @@ const slides = [
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e",
+      "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1920&q=80",
     subtitle: "DISCOVER YOUR NEXT ADVENTURE",
-    title: "Explore The World, One Journey At A Time.",
+    title: "Find Your Perfect Creative Space",
     description:
-      "Discover breathtaking destinations, experience new cultures, and create unforgettable memories.",
+      "Discover professional studios designed for photography, video production, and creative projects.",
     primaryButton: "Explore Studios",
     secondaryButton: "Host Your Space",
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1920&q=80",
     subtitle: "FIND YOUR PERFECT GETAWAY",
-    title: "Escape The Ordinary. Experience More.",
+    title: "Bring Your Creative Vision to Life",
     description:
-      "Find amazing places, explore beautiful landscapes, and make every trip extraordinary.",
+      "From podcast rooms to music suites, find everything you need to create something amazing.",
     primaryButton: "Explore Studios",
     secondaryButton: "Host Your Space",
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1518837695005-2083093ee35b",
+      "https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=1920&q=80",
     subtitle: "SHARE YOUR SPACE WITH THE WORLD",
-    title: "Turn Your Space Into Something Special.",
+    title: "Your Space. Your Creativity. Your Story.",
     description:
-      "Share your beautiful space with travelers and become part of their unforgettable journeys.",
+      "Book inspiring creative spaces and turn your ideas into reality.",
     primaryButton: "Explore Studios",
     secondaryButton: "Host Your Space",
   },
