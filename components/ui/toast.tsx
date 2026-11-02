@@ -21,10 +21,10 @@ function ToastViewport({ className, ...props }: ToastPrimitive.Viewport.Props) {
   return (
     <ToastPrimitive.Viewport
       data-slot="toast-viewport"
-      className={cn(
-        "pointer-events-none fixed inset-x-4 bottom-4 z-50 mx-auto w-auto max-w-sm outline-none sm:right-4 sm:left-auto sm:mx-0 sm:w-full",
-        className
-      )}
+        className={cn(
+          "pointer-events-none fixed right-4 top-20 z-[9999] mx-auto w-auto max-w-sm outline-none sm:mx-0 sm:w-full",
+          className
+        )}
       {...props}
     />
   )
@@ -200,10 +200,11 @@ function ToastList() {
 function Toaster({
   children,
   toastManager = toast,
+  timeout = 4000,
   ...props
-}: ToastPrimitive.Provider.Props) {
+}: ToastPrimitive.Provider.Props & { timeout?: number }) {
   return (
-    <ToastProvider toastManager={toastManager} {...props}>
+    <ToastProvider toastManager={toastManager} timeout={timeout} {...props}>
       {children}
       <ToastPortal>
         <ToastViewport>

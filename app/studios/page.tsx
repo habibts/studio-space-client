@@ -10,9 +10,18 @@ interface StudiosResponse {
   studios: Studio[];
 }
 
+import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 export default function StudiosPage() {
+  return (
+    <Suspense fallback={null}>
+      <StudiosContent />
+    </Suspense>
+  );
+}
+
+function StudiosContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [studios, setStudios] = useState<Studio[]>([]);

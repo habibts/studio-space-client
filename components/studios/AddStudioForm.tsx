@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useForm, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 import {
     Building2,
@@ -84,7 +86,10 @@ const studioSchema = z.object({
 type StudioFormValues = z.infer<typeof studioSchema>;
 
 export default function AddStudioForm() {
+    const router = useRouter();
+    const { user, isPending } = useCurrentUser();
     const [imagePreview, setImagePreview] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<StudioFormValues>({
         // zod's z.coerce fields have input type `unknown`, so the resolver's input
@@ -104,12 +109,19 @@ export default function AddStudioForm() {
     });
 
     const onSubmit = async (data: StudioFormValues) => {
+        if (!user) {
+            toast.add({ title: "Please log in", description: "You must be logged in to add a studio.", type: "error" });
+            return;
+        }
+        setIsSubmitting(true);
         try {
             console.log("Form submitted with data:", data);
 
             const studioData = {
                 ...data,
                 amenities: data.amenities || form.getValues("amenities") || [],
+                hostName: user.name || "",
+                hostEmail: user.email || "",
             };
 
             console.log("Sending studio data:", studioData);
@@ -131,20 +143,23 @@ export default function AddStudioForm() {
                 throw new Error(result.message || "Failed to add studio");
             }
 
-            toast.success("Studio added successfully!");
+            toast.add({ title: "Studio added successfully!", type: "success" });
 
             console.log("Saved Studio:", result);
 
             form.reset();
+            router.push("/my-listings");
 
         } catch (error) {
             console.error("Error submitting studio:", error);
 
-            toast.error(
-                error instanceof Error
-                    ? error.message
-                    : "Something went wrong!"
-            );
+            toast.add({
+                title: "Failed to add studio",
+                description: error instanceof Error ? error.message : "Something went wrong!",
+                type: "error",
+            });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -478,12 +493,12 @@ export default function AddStudioForm() {
                     <CardContent className="grid gap-5 md:grid-cols-2">
                         <div className="space-y-2">
                             <Label>Host Name</Label>
-                            <Input value="Guest User" readOnly />
+                            <Input value={user?.name || ""} readOnly />
                         </div>
 
                         <div className="space-y-2">
                             <Label>Host Email</Label>
-                            <Input value="guest@example.com" readOnly />
+                            <Input value={user?.email || ""} readOnly />
                         </div>
                     </CardContent>
                 </Card>
@@ -496,10 +511,11 @@ export default function AddStudioForm() {
 
                     <Button
                         type="submit"
+                        disabled={isSubmitting}
                         className="bg-cyan-600 text-white hover:bg-cyan-700"
                     >
                         <Save className="mr-2 h-4 w-4" />
-                        Save Studio
+                        {isSubmitting ? "Saving..." : "Save Studio"}
                     </Button>
                 </div>
             </form>

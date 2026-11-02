@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,28 +18,85 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { toast } from "@/components/ui/toast";
 
-const mockBookings = [
-  { id: "1", title: "Sunset Photo Studio", category: "Photo Studio", date: "2026-11-10", startTime: "09:00", endTime: "12:00", hours: 3, hourlyRate: 45, deposit: 50, total: 185, status: "Pending", imageUrl: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&q=80", location: "Los Angeles, CA" },
-  { id: "2", title: "Echo Podcast Room", category: "Podcast Room", date: "2026-11-12", startTime: "14:00", endTime: "16:00", hours: 2, hourlyRate: 30, deposit: 20, total: 80, status: "Confirmed", imageUrl: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&q=80", location: "Austin, TX" },
-  { id: "3", title: "Harmony Music Suite", category: "Music Suite", date: "2026-10-20", startTime: "10:00", endTime: "13:00", hours: 3, hourlyRate: 60, deposit: 60, total: 240, status: "Completed", imageUrl: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&q=80", location: "Nashville, TN" },
-];
+interface Booking {
+  _id: string;
+  studioTitle: string;
+  category?: string;
+  bookingDate: string;
+  startTime: string;
+  endTime: string;
+  totalHours: number;
+  hourlyRate: number;
+  securityDeposit?: number;
+  totalPrice: number;
+  status: string;
+  imageUrl?: string;
+  location?: string;
+}
 
 export default function MyBookingsPage() {
+  const { user, isPending } = useCurrentUser();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
-  const [loading] = useState(false);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  const handleCancel = async (id: string) => {
+    if (cancellingId) return;
+    setCancellingId(id);
+    try {
+      const res = await fetch(`http://localhost:3001/bookings/${id}/cancel`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user?.email }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Cancellation failed");
+      setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: "Cancelled" } : b)));
+      toast.add({ title: "Cancelled", description: "Booking cancelled successfully.", type: "success" });
+    } catch (err) {
+      toast.add({ title: "Cancellation failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
+  useEffect(() => {
+    if (isPending) return;
+    if (!user?.email) {
+      setLoading(false);
+      return;
+    }
+    const fetchBookings = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`http://localhost:3001/my-bookings?email=${encodeURIComponent(user.email)}`);
+        if (!res.ok) throw new Error("Failed to fetch bookings");
+        const data = await res.json();
+        setBookings(data.bookings || data || []);
+      } catch (err) {
+        toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load bookings", type: "error" });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBookings();
+  }, [user, isPending]);
 
   const filters = ["All", "Pending", "Confirmed", "Completed", "Cancelled"];
   const filtered = useMemo(
-    () => (filter === "All" ? mockBookings : mockBookings.filter((b) => b.status === filter)),
-    [filter]
+    () => (filter === "All" ? bookings : bookings.filter((b) => b.status === filter)),
+    [filter, bookings]
   );
 
   const counts = {
-    total: mockBookings.length,
-    pending: mockBookings.filter((b) => b.status === "Pending").length,
-    confirmed: mockBookings.filter((b) => b.status === "Confirmed").length,
-    completed: mockBookings.filter((b) => b.status === "Completed").length,
+    total: bookings.length,
+    pending: bookings.filter((b) => b.status === "Pending").length,
+    confirmed: bookings.filter((b) => b.status === "Confirmed").length,
+    completed: bookings.filter((b) => b.status === "Completed").length,
   };
 
   return (
@@ -63,9 +120,7 @@ export default function MyBookingsPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-                filter === f
-                  ? "bg-amber-500 text-white"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+                filter === f ? "bg-amber-500 text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
               {f}
@@ -73,7 +128,7 @@ export default function MyBookingsPage() {
           ))}
         </div>
 
-        {loading ? (
+        {loading || isPending ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="space-y-3">
@@ -91,39 +146,39 @@ export default function MyBookingsPage() {
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((b) => (
-              <Card key={b.id} className="overflow-hidden">
-                <div className="relative aspect-[4/3] w-full overflow-hidden">
-                  <Image src={b.imageUrl} alt={b.title} fill className="object-cover" sizes="(max-width:768px)100vw,33vw" />
-                  <Badge className="absolute left-3 top-3">{b.category}</Badge>
+              <Card key={b._id} className="overflow-hidden">
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+                  {b.imageUrl ? (
+                    <Image src={b.imageUrl} alt={b.studioTitle} fill unoptimized className="object-cover" sizes="(max-width:768px)100vw,33vw" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-muted-foreground">No image</div>
+                  )}
+                  <Badge className="absolute left-3 top-3">{b.category || "Studio"}</Badge>
                   <Badge
                     className={`absolute right-3 top-3 ${
-                      b.status === "Pending"
-                        ? "bg-yellow-500"
-                        : b.status === "Confirmed"
-                        ? "bg-green-500"
-                        : b.status === "Completed"
-                        ? "bg-blue-500"
-                        : "bg-red-500"
+                      b.status === "Pending" ? "bg-yellow-500" : b.status === "Confirmed" ? "bg-green-500" : b.status === "Completed" ? "bg-blue-500" : "bg-red-500"
                     } text-white`}
                   >
                     {b.status}
                   </Badge>
                 </div>
                 <CardContent className="space-y-3 p-4">
-                  <h3 className="text-lg font-semibold">{b.title}</h3>
+                  <h3 className="text-lg font-semibold">{b.studioTitle}</h3>
+                  {b.location && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4" /> {b.location}
+                    </div>
+                  )}
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4" /> {b.location}
+                    <Calendar className="h-4 w-4" /> {isNaN(Date.parse(b.bookingDate)) ? b.bookingDate : new Date(b.bookingDate).toLocaleDateString()}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" /> {b.date}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" /> {b.startTime} – {b.endTime} ({b.hours}h)
+                    <Clock className="h-4 w-4" /> {b.startTime} – {b.endTime} ({Number(b.totalHours).toFixed(2).replace(/\.00$/, "")}h)
                   </div>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between"><span className="text-muted-foreground">Hourly Rate</span><span>${b.hourlyRate}/hr</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Security Deposit</span><span>${b.deposit}</span></div>
-                    <div className="flex justify-between font-semibold"><span>Total</span><span className="text-amber-500">${b.total}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Security Deposit</span><span>${b.securityDeposit || 0}</span></div>
+                    <div className="flex justify-between font-semibold"><span>Total</span><span className="text-amber-500">${b.totalPrice}</span></div>
                   </div>
                   {b.status === "Pending" && (
                     <AlertDialog>
@@ -139,7 +194,9 @@ export default function MyBookingsPage() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Keep Booking</AlertDialogCancel>
-                          <AlertDialogAction>Cancel Booking</AlertDialogAction>
+                          <AlertDialogAction onClick={() => handleCancel(b._id)} disabled={cancellingId === b._id}>
+                            {cancellingId === b._id ? "Cancelling..." : "Cancel Booking"}
+                          </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

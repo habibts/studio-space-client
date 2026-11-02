@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "@/components/ui/toast";
+import { LayoutDashboard, PlusCircle, List, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User as UserIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,13 +41,23 @@ export default function UserProfileDropdown({ user }: UserProfileDropdownProps) 
           </DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/my-profile")}>My Profile</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/my-listings")}>My Listings</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/my-bookings")}>My Bookings</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+          <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/studios/add-studio")}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Add New Studio
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/my-listings")}>
+          <List className="mr-2 h-4 w-4" /> My Studio Listings
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/my-bookings")}>
+          <Calendar className="mr-2 h-4 w-4" /> My Bookings
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
             await authClient.signOut();
+            toast.add({ title: "Logged out successfully", description: "You have been signed out.", type: "success" });
             router.push("/");
           }}
         >

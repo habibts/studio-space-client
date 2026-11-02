@@ -16,16 +16,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Studio } from "@/components/studios/StudioCard";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { toast } from "@/components/ui/toast";
 
 interface BookingCardProps {
   studio: Studio;
 }
 
 export default function BookingCard({ studio }: BookingCardProps) {
+  const { user } = useCurrentUser();
   const [bookingOpen, setBookingOpen] = useState(false);
   const [bookingDate, setBookingDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
 
   const hours =
     startTime && endTime
@@ -37,12 +42,23 @@ export default function BookingCard({ studio }: BookingCardProps) {
         )
       : 0;
 
-  const handleConfirmBooking = () => {
-    if (!bookingDate || !startTime || !endTime || hours <= 0) return;
+  const handleConfirmBooking = async () => {
+    if (!bookingDate || !startTime || !endTime || hours <= 0) {
+      toast.add({ title: "Validation error", description: "Please fill all booking fields correctly.", type: "error" });
+      return;
+    }
+    if (bookingDate < today) {
+      toast.add({ title: "Validation error", description: "Booking date cannot be in the past.", type: "error" });
+      return;
+    }
+    if (submitting) return;
+    setSubmitting(true);
     const bookingData = {
       studioId: studio._id,
-      customerName: "Guest User",
-      customerEmail: "",
+      studioTitle: studio.title,
+      imageUrl: studio.imageUrl,
+      customerName: user?.name || "",
+      customerEmail: user?.email || "",
       bookingDate,
       startTime,
       endTime,
@@ -51,8 +67,24 @@ export default function BookingCard({ studio }: BookingCardProps) {
       securityDeposit: studio.securityDeposit || 0,
       totalPrice: (studio.hourlyRate || 0) * hours + (studio.securityDeposit || 0),
     };
-    console.log(bookingData);
-    setBookingOpen(false);
+    try {
+      const res = await fetch("http://localhost:3001/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Booking failed");
+      toast.add({ title: "Booking confirmed", description: "Your booking was created successfully.", type: "success" });
+      setBookingOpen(false);
+      setBookingDate("");
+      setStartTime("");
+      setEndTime("");
+    } catch (err) {
+      toast.add({ title: "Booking failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -95,7 +127,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Booking Date</label>
-                <Input type="date" value={bookingDate} onChange={(e) => setBookingDate(e.target.value)} />
+                <Input type="date" min={today} value={bookingDate} onChange={(e) => setBookingDate(e.target.value)} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
@@ -109,7 +141,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Number of Hours</span>
-                <span className="font-medium">{hours}</span>
+                <span className="font-medium">{hours.toFixed(2)}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Hourly Rate</span>
@@ -129,9 +161,10 @@ export default function BookingCard({ studio }: BookingCardProps) {
             <DialogFooter showCloseButton>
               <Button
                 onClick={handleConfirmBooking}
+                disabled={submitting}
                 className="bg-amber-500 text-white hover:bg-amber-600"
               >
-                Confirm Booking
+                {submitting ? "Booking..." : "Confirm Booking"}
               </Button>
             </DialogFooter>
           </DialogContent>
