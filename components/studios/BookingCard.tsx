@@ -37,6 +37,24 @@ export default function BookingCard({ studio }: BookingCardProps) {
         )
       : 0;
 
+  const handleConfirmBooking = () => {
+    if (!bookingDate || !startTime || !endTime || hours <= 0) return;
+    const bookingData = {
+      studioId: studio._id,
+      customerName: "Guest User",
+      customerEmail: "",
+      bookingDate,
+      startTime,
+      endTime,
+      totalHours: hours,
+      hourlyRate: studio.hourlyRate,
+      securityDeposit: studio.securityDeposit || 0,
+      totalPrice: (studio.hourlyRate || 0) * hours + (studio.securityDeposit || 0),
+    };
+    console.log(bookingData);
+    setBookingOpen(false);
+  };
+
   return (
     <Card>
       <CardContent className="space-y-4 p-6">
@@ -65,7 +83,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
         <Separator />
 
         <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-          <DialogTrigger className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+          <DialogTrigger className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
             <Calendar className="mr-2 size-4" />
             Book Workspace Now
           </DialogTrigger>
@@ -110,10 +128,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
             </div>
             <DialogFooter showCloseButton>
               <Button
-                onClick={() => {
-                  if (!bookingDate || !startTime || !endTime || hours <= 0) return;
-                  setBookingOpen(false);
-                }}
+                onClick={handleConfirmBooking}
                 className="bg-amber-500 text-white hover:bg-amber-600"
               >
                 Confirm Booking
