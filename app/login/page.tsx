@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import { Eye, EyeOff, Mail } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -20,12 +22,14 @@ const GoogleIcon = () => (
 );
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = "Enter a valid email address.";
@@ -35,7 +39,17 @@ export default function LoginPage() {
       toast.add({ title: "Validation error", description: "Please fix the highlighted fields.", type: "error" });
       return;
     }
-    toast.add({ title: "Validation passed", description: "Frontend validation passed. No login performed.", type: "success" });
+    setLoading(true);
+    try {
+      const res = await authClient.signIn.email({ email, password });
+      if (res.error) throw new Error(res.error.message || "Login failed");
+      toast.add({ title: "Welcome back", description: "Logged in successfully.", type: "success" });
+      router.push("/");
+    } catch (err) {
+      toast.add({ title: "Login failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,7 +60,7 @@ export default function LoginPage() {
           <CardDescription>Sign in to continue your creative journey with StudioSpace.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -91,8 +105,8 @@ export default function LoginPage() {
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
             </div>
 
-            <Button type="submit" className="w-full bg-amber-500 text-white hover:bg-amber-600">
-              Login
+            <Button type="submit" disabled={loading} className="w-full bg-amber-500 text-white hover:bg-amber-600">
+              {loading ? "Signing in..." : "Login"}
             </Button>
           </form>
 

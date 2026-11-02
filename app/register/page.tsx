@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { Eye, EyeOff, Image as ImageIcon, Mail, User } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,9 +28,11 @@ const GithubIcon = () => (
 );
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ name: "", email: "", photoUrl: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
   const validatePassword = (pw: string) => {
     if (pw.length < 6) return "Password must be at least 6 characters long.";
@@ -37,7 +41,7 @@ export default function RegisterPage() {
     return "";
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
     if (!form.name.trim()) newErrors.name = "Full name is required.";
@@ -49,7 +53,17 @@ export default function RegisterPage() {
       toast.add({ title: "Validation error", description: "Please fix the highlighted fields.", type: "error" });
       return;
     }
-    toast.add({ title: "Form valid", description: "Frontend validation passed. Backend not connected.", type: "success" });
+    setLoading(true);
+    try {
+      const res = await authClient.signUp.email({ name: form.name, email: form.email, password: form.password });
+      if (res.error) throw new Error(res.error.message || "Registration failed");
+      toast.add({ title: "Welcome!", description: "Account created successfully.", type: "success" });
+      router.push("/");
+    } catch (err) {
+      toast.add({ title: "Registration failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,7 +74,7 @@ export default function RegisterPage() {
           <CardDescription>Join StudioSpace and start creating.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="name">Full Name</Label>
             <div className="relative">
@@ -129,8 +143,8 @@ export default function RegisterPage() {
             {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
           </div>
 
-          <Button type="submit" className="w-full bg-amber-500 text-white hover:bg-amber-600">
-            Register
+          <Button type="submit" disabled={loading} className="w-full bg-amber-500 text-white hover:bg-amber-600">
+            {loading ? "Creating account..." : "Register"}
           </Button>
         </form>
 

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import UserProfileDropdown from "@/components/shared/UserProfileDropdown";
 import {
   Menu,
   X,
@@ -15,6 +17,7 @@ import {
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const { user, isPending } = useCurrentUser();
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -74,20 +77,28 @@ export default function Navbar() {
             <Heart size={20} />
           </Link>
 
-          <Link
-            href="/login"
-            className="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-amber-500 hover:text-amber-500 dark:border-gray-700 dark:text-gray-200"
-          >
-            <UserRound size={17} />
-            Login
-          </Link>
+          {isPending ? (
+            <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200 dark:bg-gray-800" />
+          ) : user ? (
+            <UserProfileDropdown user={user} />
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-amber-500 hover:text-amber-500 dark:border-gray-700 dark:text-gray-200"
+              >
+                <UserRound size={17} />
+                Login
+              </Link>
 
-          <Link
-            href="/register"
-            className="rounded-full bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-600"
-          >
-            Get Started
-          </Link>
+              <Link
+                href="/register"
+                className="rounded-full bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-600"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
