@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Eye, EyeOff, Mail } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,7 +23,17 @@ const GoogleIcon = () => (
 );
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +55,7 @@ export default function LoginPage() {
       const res = await authClient.signIn.email({ email, password });
       if (res.error) throw new Error(res.error.message || "Login failed");
       toast.add({ title: "Welcome back", description: "Logged in successfully.", type: "success" });
-      router.push("/");
+      router.push(callbackUrl);
     } catch (err) {
       toast.add({ title: "Login failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
     } finally {

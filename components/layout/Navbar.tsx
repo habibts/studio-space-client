@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import UserProfileDropdown from "@/components/shared/UserProfileDropdown";
 import {
@@ -17,6 +18,7 @@ import {
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const pathname = usePathname();
   const { user, isPending } = useCurrentUser();
 
   const navLinks = [
@@ -48,15 +50,27 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-gray-600 transition-colors hover:text-amber-500 dark:text-gray-300 dark:hover:text-amber-400"
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive =
+              link.href === "/"
+                ? pathname === "/"
+                : link.href === "/studios"
+                ? pathname === "/studios" || pathname.startsWith("/studios/")
+                : pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors ${
+                  isActive
+                    ? "border-b-2 border-[#05893E] pb-1 font-semibold text-[#05893E]"
+                    : "text-gray-600 hover:text-amber-500 dark:text-gray-300 dark:hover:text-amber-400"
+                }`}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Desktop Actions */}
