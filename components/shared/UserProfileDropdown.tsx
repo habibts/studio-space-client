@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/components/ui/toast";
 import { LayoutDashboard, PlusCircle, List, Calendar } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -23,13 +24,17 @@ export default function UserProfileDropdown({ user }: UserProfileDropdownProps) 
   const router = useRouter();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white">
-        <Avatar className="h-10 w-10">
-          <AvatarImage src={user.image || ""} alt={user.name || "User"} className="object-cover" />
-          <AvatarFallback className="bg-amber-500 text-white font-bold flex items-center justify-center">
-            {(user.name || "U").charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger className="flex flex-col items-center gap-0.5">
+        <div className="flex items-center gap-1">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={user.image || ""} alt={user.name || "User"} className="object-cover" />
+            <AvatarFallback className="bg-orange-500 text-white font-bold flex items-center justify-center">
+              {(user.name || "U").charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        </div>
+        <span className="max-w-[120px] truncate text-[10px] text-muted-foreground">{user.email}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[300px]">
         <DropdownMenuGroup>
