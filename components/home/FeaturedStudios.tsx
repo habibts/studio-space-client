@@ -19,32 +19,23 @@ export default function FeaturedStudios() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchFeaturedStudios = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch("http://localhost:3001/featured-studios");
-        if (!response.ok) {
-          throw new Error("Failed to fetch featured studios");
-        }
-        const data: FeaturedStudiosResponse = await response.json();
-        if (data.success) {
-          setStudios((data.studios || []).slice(0, 6));
-        } else {
-          throw new Error("Failed to fetch featured studios");
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "An error occurred while fetching featured studios"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchFeaturedStudios = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch("http://localhost:3001/featured-studios");
+      if (!response.ok) throw new Error("Failed to fetch featured studios");
+      const data: FeaturedStudiosResponse = await response.json();
+      if (data.success) setStudios((data.studios || []).slice(0, 6));
+      else throw new Error("Failed to fetch featured studios");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred while fetching featured studios");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchFeaturedStudios();
   }, []);
 
@@ -84,20 +75,28 @@ export default function FeaturedStudios() {
         {error && !loading && (
           <div className="flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">
             <p className="text-lg font-semibold text-foreground">
-              Something went wrong
+              Unable to Load Featured Studios
             </p>
-            <p className="text-muted-foreground">{error}</p>
+            <p className="text-muted-foreground">
+              Something went wrong while loading featured studios.
+            </p>
+            <button onClick={fetchFeaturedStudios} className="mt-2 rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">
+              Try Again
+            </button>
           </div>
         )}
 
         {!loading && !error && studios.length === 0 && (
           <div className="flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">
             <p className="text-lg font-semibold text-foreground">
-              No featured studios available
+              No Featured Studios Yet
             </p>
             <p className="text-muted-foreground">
-              Check back later for new creative spaces
+              There are no featured studios available right now.
             </p>
+            <Link href="/studios" className="mt-2 rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">
+              Explore Studios
+            </Link>
           </div>
         )}
 

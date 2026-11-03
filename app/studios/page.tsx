@@ -30,22 +30,23 @@ function StudiosContent() {
 
   const category = searchParams.get("category");
 
+  const fetchStudios = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch("http://localhost:3001/studios");
+      if (!response.ok) throw new Error("Failed to fetch studios");
+      const data: StudiosResponse = await response.json();
+      if (data.success) setStudios(data.studios || []);
+      else throw new Error("Failed to fetch studios");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred while fetching studios");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchStudios = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch("http://localhost:3001/studios");
-        if (!response.ok) throw new Error("Failed to fetch studios");
-        const data: StudiosResponse = await response.json();
-        if (data.success) setStudios(data.studios || []);
-        else throw new Error("Failed to fetch studios");
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred while fetching studios");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchStudios();
   }, []);
 
@@ -102,20 +103,30 @@ function StudiosContent() {
         {error && !loading && (
           <div className="flex min-h-[400px] flex-col items-center justify-center space-y-3 text-center">
             <p className="text-lg font-semibold text-foreground">
-              Something went wrong
+              Unable to Load Studios
             </p>
-            <p className="text-muted-foreground">{error}</p>
+            <p className="text-muted-foreground">
+              Something went wrong while loading studios.
+            </p>
+            <button onClick={fetchStudios} className="mt-2 rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">
+              Try Again
+            </button>
           </div>
         )}
 
         {!loading && !error && filtered.length === 0 && (
           <div className="flex min-h-[400px] flex-col items-center justify-center space-y-3 text-center">
             <p className="text-lg font-semibold text-foreground">
-              No studios available
+              No Studios Found
             </p>
             <p className="text-muted-foreground">
-              Check back later for new creative spaces
+              No studios match your search or filters.
             </p>
+            {category && (
+              <button onClick={() => router.replace("/studios")} className="mt-2 rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">
+                Clear Filters
+              </button>
+            )}
           </div>
         )}
 

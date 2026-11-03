@@ -36,6 +36,7 @@ export default function MyListingsPage() {
   const { user, isPending } = useCurrentUser();
   const [studios, setStudios] = useState<Studio[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -56,25 +57,29 @@ export default function MyListingsPage() {
   };
   const [category, setCategory] = useState("All");
 
+  const fetchStudios = async () => {
+    if (!user?.email) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch(`http://localhost:3001/my-studios?email=${encodeURIComponent(user.email)}`);
+      if (!res.ok) throw new Error("Failed to fetch studios");
+      const data = await res.json();
+      setStudios(data.studios || data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load studios");
+      toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load studios", type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (isPending) return;
     if (!user?.email) {
       setLoading(false);
       return;
     }
-    const fetchStudios = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`http://localhost:3001/my-studios?email=${encodeURIComponent(user.email)}`);
-        if (!res.ok) throw new Error("Failed to fetch studios");
-        const data = await res.json();
-        setStudios(data.studios || data || []);
-      } catch (err) {
-        toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load studios", type: "error" });
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchStudios();
   }, [user, isPending]);
 
@@ -123,6 +128,12 @@ export default function MyListingsPage() {
                 <Skeleton className="h-4 w-1/2" />
               </div>
             ))}
+          </div>
+        ) : error ? (
+          <div className="flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">
+            <p className="text-lg font-semibold">Unable to Load Studios</p>
+            <p className="text-muted-foreground">Something went wrong while loading your studios.</p>
+            <Button onClick={fetchStudios} className="mt-2">Try Again</Button>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">

@@ -64,25 +64,31 @@ export default function MyBookingsPage() {
     }
   };
 
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchBookings = async () => {
+    if (!user?.email) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch(`http://localhost:3001/my-bookings?email=${encodeURIComponent(user.email)}`);
+      if (!res.ok) throw new Error("Failed to fetch bookings");
+      const data = await res.json();
+      setBookings(data.bookings || data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load bookings");
+      toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load bookings", type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (isPending) return;
     if (!user?.email) {
       setLoading(false);
       return;
     }
-    const fetchBookings = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`http://localhost:3001/my-bookings?email=${encodeURIComponent(user.email)}`);
-        if (!res.ok) throw new Error("Failed to fetch bookings");
-        const data = await res.json();
-        setBookings(data.bookings || data || []);
-      } catch (err) {
-        toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load bookings", type: "error" });
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchBookings();
   }, [user, isPending]);
 
@@ -138,10 +144,17 @@ export default function MyBookingsPage() {
               </div>
             ))}
           </div>
+        ) : error ? (
+          <div className="flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">
+            <p className="text-lg font-semibold">Unable to Load Bookings</p>
+            <p className="text-muted-foreground">Something went wrong while loading your bookings.</p>
+            <Button onClick={fetchBookings} className="mt-2">Try Again</Button>
+          </div>
         ) : filtered.length === 0 ? (
           <div className="flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">
-            <p className="text-lg font-semibold">No bookings found</p>
-            <p className="text-muted-foreground">You have no bookings in this category.</p>
+            <p className="text-lg font-semibold">No Bookings Yet</p>
+            <p className="text-muted-foreground">You haven't booked any studio yet. Explore studios and book your workspace.</p>
+            <a href="/studios" className="mt-4 inline-flex items-center justify-center rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">Explore Studios</a>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

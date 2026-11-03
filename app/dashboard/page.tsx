@@ -21,6 +21,29 @@ export default function DashboardPage() {
   const [studios, setStudios] = useState<Studio[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchAll = async () => {
+    if (!user?.email) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const [sRes, bRes] = await Promise.all([
+        fetch(`http://localhost:3001/my-studios?email=${encodeURIComponent(user.email)}`),
+        fetch(`http://localhost:3001/my-bookings?email=${encodeURIComponent(user.email)}`),
+      ]);
+      if (!sRes.ok || !bRes.ok) throw new Error("Failed to load dashboard");
+      const sData = await sRes.json();
+      const bData = await bRes.json();
+      setStudios(sData.studios || []);
+      setBookings(bData.bookings || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load dashboard");
+      toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load dashboard", type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (isPending) return;
@@ -28,23 +51,6 @@ export default function DashboardPage() {
       router.push("/login");
       return;
     }
-    const fetchAll = async () => {
-      try {
-        setLoading(true);
-        const [sRes, bRes] = await Promise.all([
-          fetch(`http://localhost:3001/my-studios?email=${encodeURIComponent(user.email)}`),
-          fetch(`http://localhost:3001/my-bookings?email=${encodeURIComponent(user.email)}`),
-        ]);
-        const sData = await sRes.json();
-        const bData = await bRes.json();
-        setStudios(sData.studios || []);
-        setBookings(bData.bookings || []);
-      } catch (err) {
-        toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load dashboard", type: "error" });
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchAll();
   }, [user, isPending, router]);
 
@@ -56,6 +62,18 @@ export default function DashboardPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
           </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-[#F3FBF4] px-4 py-10">
+        <div className="mx-auto max-w-7xl flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">
+          <p className="text-lg font-semibold text-[#26352B]">Unable to Load Dashboard</p>
+          <p className="text-[#26352B]/70">Something went wrong while loading dashboard data.</p>
+          <Button onClick={fetchAll} className="mt-2 bg-[#05893E] text-white hover:bg-[#047a36]">Try Again</Button>
         </div>
       </main>
     );
@@ -93,7 +111,7 @@ export default function DashboardPage() {
             <Link href="/my-listings" className="text-sm text-[#05893E] hover:underline">View All</Link>
           </div>
           {studios.length === 0 ? (
-            <p className="text-sm text-[#26352B]/60">No studios yet.</p>
+            <p className="text-sm text-[#26352B]/60">No studios yet. <Link href="/studios/add-studio" className="text-[#05893E] hover:underline">Add your first studio</Link></p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {studios.slice(0, 3).map((s) => (
@@ -120,7 +138,7 @@ export default function DashboardPage() {
             <Link href="/my-bookings" className="text-sm text-[#05893E] hover:underline">View All</Link>
           </div>
           {bookings.length === 0 ? (
-            <p className="text-sm text-[#26352B]/60">No bookings yet.</p>
+            <p className="text-sm text-[#26352B]/60">No bookings yet. <Link href="/studios" className="text-[#05893E] hover:underline">Explore studios</Link></p>
           ) : (
             <div className="space-y-3">
               {bookings.slice(0, 5).map((b) => (

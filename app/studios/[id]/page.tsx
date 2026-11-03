@@ -46,36 +46,36 @@ export default function StudioDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchStudio = async () => {
-      if (!id) return;
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch(`http://localhost:3001/studios/${id}`);
-        if (response.status === 404) {
-          throw new Error("Studio not found");
-        }
-        if (!response.ok) {
-          throw new Error("Failed to fetch studio details");
-        }
-        const data: StudioResponse = await response.json();
-        if (data.success && data.studio) {
-          setStudio(data.studio);
-        } else {
-          throw new Error("Studio not found");
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "An error occurred while fetching studio details"
-        );
-      } finally {
-        setLoading(false);
+  const fetchStudio = async () => {
+    if (!id) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(`http://localhost:3001/studios/${id}`);
+      if (response.status === 404) {
+        throw new Error("Studio not found");
       }
-    };
+      if (!response.ok) {
+        throw new Error("Failed to fetch studio details");
+      }
+      const data: StudioResponse = await response.json();
+      if (data.success && data.studio) {
+        setStudio(data.studio);
+      } else {
+        throw new Error("Studio not found");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while fetching studio details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchStudio();
   }, [id]);
 
@@ -113,16 +113,22 @@ export default function StudioDetailsPage() {
           </Link>
           <div className="flex min-h-[400px] flex-col items-center justify-center space-y-3 text-center">
             <p className="text-lg font-semibold text-foreground">
-              {error === "Studio not found" ? "Studio Not Found" : "Something went wrong"}
+              {error === "Studio not found" ? "Studio Not Found" : "Unable to Load Studio"}
             </p>
             <p className="text-muted-foreground">
               {error === "Studio not found"
                 ? "The studio you're looking for doesn't exist or has been removed."
-                : error}
+                : "Something went wrong while loading studio details."}
             </p>
-            <Link href="/studios" className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
-              Browse All Studios
-            </Link>
+            {error === "Studio not found" ? (
+              <Link href="/studios" className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+                Back to Studios
+              </Link>
+            ) : (
+              <button onClick={fetchStudio} className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+                Try Again
+              </button>
+            )}
           </div>
         </div>
       </main>
