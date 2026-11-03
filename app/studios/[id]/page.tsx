@@ -107,12 +107,10 @@ export default function StudioDetailsPage() {
     return (
       <main className="min-h-screen bg-background">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <Button asChild variant="ghost" className="mb-6">
-            <Link href="/studios" className="flex items-center gap-2">
-              <ArrowLeft className="size-4" />
-              Back to Studios
-            </Link>
-          </Button>
+          <Link href="/studios" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="size-4" />
+            Back to Studios
+          </Link>
           <div className="flex min-h-[400px] flex-col items-center justify-center space-y-3 text-center">
             <p className="text-lg font-semibold text-foreground">
               {error === "Studio not found" ? "Studio Not Found" : "Something went wrong"}
@@ -122,9 +120,9 @@ export default function StudioDetailsPage() {
                 ? "The studio you're looking for doesn't exist or has been removed."
                 : error}
             </p>
-            <Button asChild className="mt-4">
-              <Link href="/studios">Browse All Studios</Link>
-            </Button>
+            <Link href="/studios" className="mt-4 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+              Browse All Studios
+            </Link>
           </div>
         </div>
       </main>
@@ -138,12 +136,10 @@ export default function StudioDetailsPage() {
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <Button asChild variant="ghost" className="mb-6">
-          <Link href="/studios" className="flex items-center gap-2">
-            <ArrowLeft className="size-4" />
-            Back to Studios
-          </Link>
-        </Button>
+        <Link href="/studios" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="size-4" />
+          Back to Studios
+        </Link>
 
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
@@ -152,6 +148,7 @@ export default function StudioDetailsPage() {
                 src={studio.imageUrl}
                 alt={studio.title}
                 fill
+                unoptimized
                 sizes="(max-width: 1024px) 100vw, 66vw"
                 className="object-cover"
                 priority

@@ -37,6 +37,23 @@ export default function MyListingsPage() {
   const [studios, setStudios] = useState<Studio[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    if (deletingId) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`http://localhost:3001/studios/${id}`, { method: "DELETE" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Delete failed");
+      setStudios((prev) => prev.filter((s) => s._id !== id));
+      toast.add({ title: "Deleted", description: "Studio deleted successfully.", type: "success" });
+    } catch (err) {
+      toast.add({ title: "Delete failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+    } finally {
+      setDeletingId(null);
+    }
+  };
   const [category, setCategory] = useState("All");
 
   useEffect(() => {
@@ -149,7 +166,9 @@ export default function MyListingsPage() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction>Delete</AlertDialogAction>
+                          <AlertDialogAction onClick={() => handleDelete(studio._id)} disabled={deletingId === studio._id}>
+                        {deletingId === studio._id ? "Deleting..." : "Delete"}
+                      </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

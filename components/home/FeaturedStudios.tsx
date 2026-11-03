@@ -60,12 +60,10 @@ export default function FeaturedStudios() {
               Discover our handpicked creative spaces for your next project.
             </p>
           </div>
-          <Button asChild variant="outline" className="group">
-            <Link href="/studios" className="flex items-center gap-2">
-              Explore All Studios
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </Button>
+          <Link href="/studios" className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent group">
+            Explore All Studios
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+          </Link>
         </div>
 
         {loading && (
