@@ -158,9 +158,15 @@ export default function RegisterPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Button variant="outline" type="button" className="w-full">
+          <Button variant="outline" type="button" className="w-full" onClick={async () => {
+            try {
+              await authClient.signIn.social({ provider: "google", callbackURL: "/" });
+            } catch (err) {
+              toast.add({ title: "Google signup failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+            }
+          }}>
             <GoogleIcon />
-            <span className="ml-2">Google</span>
+            <span className="ml-2">Continue with Google</span>
           </Button>
           <Button variant="outline" type="button" className="w-full">
             <GithubIcon />

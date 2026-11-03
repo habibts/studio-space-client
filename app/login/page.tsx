@@ -130,9 +130,15 @@ function LoginContent() {
             </div>
           </div>
 
-          <Button variant="outline" type="button" className="w-full">
+          <Button variant="outline" type="button" className="w-full" onClick={async () => {
+            try {
+              await authClient.signIn.social({ provider: "google", callbackURL: "/" });
+            } catch (err) {
+              toast.add({ title: "Google login failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+            }
+          }}>
             <GoogleIcon />
-            <span className="ml-2">Google</span>
+            <span className="ml-2">Continue with Google</span>
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
