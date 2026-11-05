@@ -38,7 +38,17 @@ interface StudioResponse {
   studio: Studio;
 }
 
+import { Suspense } from "react";
+
 export default function StudioDetailsPage() {
+  return (
+    <Suspense fallback={null}>
+      <StudioDetailsContent />
+    </Suspense>
+  );
+}
+
+function StudioDetailsContent() {
   const params = useParams();
   const id = params?.id as string;
 
@@ -231,3 +241,5 @@ export default function StudioDetailsPage() {
     </main>
   );
 }
+
+export const dynamic = "force-dynamic";

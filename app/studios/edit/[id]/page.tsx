@@ -1,13 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { useParams, useRouter } from "next/navigation";
 import EditStudioForm from "@/components/studios/EditStudioForm";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+import { Suspense } from "react";
+
 export default function EditStudioPage() {
+  return (
+    <Suspense fallback={null}>
+      <EditStudioContent />
+    </Suspense>
+  );
+}
+
+function EditStudioContent() {
   const params = useParams();
   const id = params?.id as string;
   const router = useRouter();
@@ -74,3 +85,4 @@ export default function EditStudioPage() {
     </main>
   );
 }
+export const dynamic = "force-dynamic";

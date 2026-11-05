@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { Building2, Calendar, PlusCircle, Search, List, Clock } from "lucide-react";
+import { Calendar, PlusCircle, Search, List } from "lucide-react";
 
 interface Studio { _id: string; title: string; category: string; hourlyRate: number; imageUrl: string; }
 interface Booking { _id: string; studioTitle: string; bookingDate: string; startTime: string; endTime: string; totalPrice: number; status: string; }
@@ -50,7 +50,7 @@ export default function DashboardPage() {
       return;
     }
     fetchAll();
-  }, [user, isPending, router]);
+  }, [user, isPending, router,]);
 
   if (isPending || loading) {
     return (
