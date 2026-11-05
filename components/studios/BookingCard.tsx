@@ -67,7 +67,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
     };
     try {
       await fetch("/api/auth/jwt", { credentials: "include" });
-      const res = await fetch("http://localhost:3001/bookings", {
+      const res = await fetch("https://studio-space-server-kduo.vercel.app/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

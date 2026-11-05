@@ -34,7 +34,7 @@ function StudiosContent() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://localhost:3001/studios");
+      const response = await fetch("https://studio-space-server-kduo.vercel.app/studios");
       if (!response.ok) throw new Error("Failed to fetch studios");
       const data: StudiosResponse = await response.json();
       if (data.success) setStudios(data.studios || []);

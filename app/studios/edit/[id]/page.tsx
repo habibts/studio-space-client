@@ -29,7 +29,7 @@ function EditStudioContent() {
     const fetchStudio = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:3001/studios/${id}`);
+        const res = await fetch(`https://studio-space-server-kduo.vercel.app/studios/${id}`);
         if (!res.ok) throw new Error("Failed to fetch studio");
         const data = await res.json();
         setStudio(data.studio || data);

@@ -23,7 +23,7 @@ export default function FeaturedStudios() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://localhost:3001/featured-studios");
+      const response = await fetch("https://studio-space-server-kduo.vercel.app/featured-studios");
       if (!response.ok) throw new Error("Failed to fetch featured studios");
       const data: FeaturedStudiosResponse = await response.json();
       if (data.success) setStudios((data.studios || []).slice(0, 6));
