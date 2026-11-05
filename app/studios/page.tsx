@@ -12,6 +12,7 @@ interface StudiosResponse {
 
 import { Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { api } from "@/lib/api";
 
 export default function StudiosPage() {
   return (
@@ -34,7 +35,7 @@ function StudiosContent() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("https://studio-space-server-delta.vercel.app/studios");
+      const response = await fetch(api("/studios"));
       if (!response.ok) throw new Error("Failed to fetch studios");
       const data: StudiosResponse = await response.json();
       if (data.success) setStudios(data.studios || []);

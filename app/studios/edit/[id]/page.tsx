@@ -7,6 +7,7 @@ import EditStudioForm from "@/components/studios/EditStudioForm";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { api } from "@/lib/api";
 
 export default function EditStudioPage() {
   return (
@@ -29,7 +30,7 @@ function EditStudioContent() {
     const fetchStudio = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`https://studio-space-server-delta.vercel.app/studios/${id}`);
+        const res = await fetch(api(`/studios/${id}`));
         if (!res.ok) throw new Error("Failed to fetch studio");
         const data = await res.json();
         setStudio(data.studio || data);

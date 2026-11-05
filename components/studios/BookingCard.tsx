@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Studio } from "@/components/studios/StudioCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { api } from "@/lib/api";
 
 interface BookingCardProps {
   studio: Studio;
@@ -67,7 +68,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
     };
     try {
       await fetch("/api/auth/jwt", { credentials: "include" });
-      const res = await fetch("https://studio-space-server-delta.vercel.app/bookings", {
+      const res = await fetch(api("/bookings"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

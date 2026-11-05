@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import StudioCard, { Studio } from "@/components/studios/StudioCard";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/lib/api";
 
 interface FeaturedStudiosResponse {
   success: boolean;
@@ -23,7 +24,7 @@ export default function FeaturedStudios() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("https://studio-space-server-delta.vercel.app/featured-studios");
+      const response = await fetch(api("/featured-studios"));
       if (!response.ok) throw new Error("Failed to fetch featured studios");
       const data: FeaturedStudiosResponse = await response.json();
       if (data.success) setStudios((data.studios || []).slice(0, 6));

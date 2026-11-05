@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Building2, DollarSign, ImagePlus, MapPin, Save, Users } from "lucide-react";
@@ -73,7 +74,7 @@ export default function EditStudioForm({ studio }: EditStudioFormProps) {
   const onSubmit = async (data: StudioFormValues) => {
     setIsSubmitting(true);
     try {
-      const res = await fetch(`https://studio-space-server-delta.vercel.app/studios/${studio._id}`, {
+      const res = await fetch(api(`/studios/${studio._id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, hostName: user?.name, hostEmail: user?.email }),

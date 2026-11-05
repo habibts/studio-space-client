@@ -12,7 +12,6 @@ const trustedOrigins = (request?: Request) => {
 };
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
   trustedOrigins,
   database: mongodbAdapter(db, {
     client,

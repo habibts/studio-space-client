@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/card";
 
 import { toast } from "sonner";
+import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -126,7 +127,7 @@ export default function AddStudioForm() {
             console.log("Sending studio data:", studioData);
 
             await fetch("/api/auth/jwt", { credentials: "include" });
-        const res = await fetch("https://studio-space-server-delta.vercel.app/add-studio", {
+        const res = await fetch(api("/add-studio"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
