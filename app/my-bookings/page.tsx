@@ -42,8 +42,50 @@ export default function MyBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [completingId, setCompletingId] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
+  const handleConfirm = async (id: string) => {
+    if (confirmingId) return;
+    setConfirmingId(id);
+    try {
+      const res = await fetch(`http://localhost:3001/bookings/${id}/confirm`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Confirmation failed");
+      setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: "Confirmed" } : b)));
+      toast.add({ title: "Confirmed", description: "Booking confirmed successfully.", type: "success" });
+    } catch (err) {
+      toast.add({ title: "Confirmation failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+    } finally {
+      setConfirmingId(null);
+    }
+  };
+  const handleComplete = async (id: string) => {
+    if (completingId) return;
+    setCompletingId(id);
+    try {
+      const res = await fetch(`http://localhost:3001/bookings/${id}/complete`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Completion failed");
+      setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: "Completed" } : b)));
+      toast.add({ title: "Completed", description: "Booking completed successfully.", type: "success" });
+    } catch (err) {
+      toast.add({ title: "Completion failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+    } finally {
+      setCompletingId(null);
+    }
+  };
   const handleCancel = async (id: string) => {
     if (cancellingId) return;
     setCancellingId(id);
@@ -64,7 +106,25 @@ export default function MyBookingsPage() {
     }
   };
 
-  const [error, setError] = useState<string | null>(null);
+  const handleDelete = async (id: string) => {
+    if (deletingId) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`http://localhost:3001/bookings/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Deletion failed");
+      setBookings((prev) => prev.filter((b) => b._id !== id));
+      toast.add({ title: "Deleted", description: "Booking deleted successfully.", type: "success" });
+    } catch (err) {
+      toast.add({ title: "Deletion failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const fetchBookings = async () => {
     if (!user?.email) return;
@@ -194,21 +254,57 @@ export default function MyBookingsPage() {
                     <div className="flex justify-between font-semibold"><span>Total</span><span className="text-amber-500">${b.totalPrice}</span></div>
                   </div>
                   {b.status === "Pending" && (
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <Button variant="default" className="w-full sm:flex-1" disabled={confirmingId === b._id} onClick={() => handleConfirm(b._id)}>
+                        {confirmingId === b._id ? "Confirming..." : "Confirm Booking"}
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger className="inline-flex w-full sm:flex-1 items-center justify-center rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90">
+                          Cancel Booking
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Cancel booking?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will cancel your pending booking. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Keep Booking</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleCancel(b._id)} disabled={cancellingId === b._id}>
+                              {cancellingId === b._id ? "Cancelling..." : "Cancel Booking"}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  )}
+                  {b.status === "Confirmed" && (
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <Button variant="default" className="w-full sm:flex-1" disabled={completingId === b._id} onClick={() => handleComplete(b._id)}>
+                        {completingId === b._id ? "Completing..." : "Complete Booking"}
+                      </Button>
+                      <Button variant="secondary" className="w-full sm:flex-1" disabled>
+                        Already Confirmed
+                      </Button>
+                    </div>
+                  )}
+                  {b.status === "Cancelled" && (
                     <AlertDialog>
                       <AlertDialogTrigger className="inline-flex w-full items-center justify-center rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90">
-                        Cancel Booking
+                        Delete Booking
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Cancel booking?</AlertDialogTitle>
+                          <AlertDialogTitle>Delete booking?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will cancel your pending booking. This action cannot be undone.
+                            Are you sure you want to permanently delete this cancelled booking?
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Keep Booking</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleCancel(b._id)} disabled={cancellingId === b._id}>
-                            {cancellingId === b._id ? "Cancelling..." : "Cancel Booking"}
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(b._id)} disabled={deletingId === b._id}>
+                            {deletingId === b._id ? "Deleting..." : "Delete"}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>

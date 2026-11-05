@@ -126,13 +126,13 @@ export default function AddStudioForm() {
 
             console.log("Sending studio data:", studioData);
 
-            const res = await fetch("http://localhost:3001/add-studio", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(studioData),
-            });
+            await fetch("/api/auth/jwt", { credentials: "include" });
+        const res = await fetch("http://localhost:3001/add-studio", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(studioData),
+        });
 
             console.log("Response status:", res.status);
 

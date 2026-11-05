@@ -58,7 +58,7 @@ export default function RegisterPage() {
       const res = await authClient.signUp.email({ name: form.name, email: form.email, password: form.password });
       if (res.error) throw new Error(res.error.message || "Registration failed");
       toast.add({ title: "Welcome!", description: "Account created successfully.", type: "success" });
-      router.push("/login");
+      router.push("/");
     } catch (err) {
       toast.add({ title: "Registration failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
     } finally {

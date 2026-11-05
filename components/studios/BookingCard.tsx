@@ -68,9 +68,11 @@ export default function BookingCard({ studio }: BookingCardProps) {
       totalPrice: (studio.hourlyRate || 0) * hours + (studio.securityDeposit || 0),
     };
     try {
+      await fetch("/api/auth/jwt", { credentials: "include" });
       const res = await fetch("http://localhost:3001/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(bookingData),
       });
       const data = await res.json().catch(() => ({}));

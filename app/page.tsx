@@ -1,4 +1,4 @@
-import HeroSlider from "@/components/home/HeroSlider";
+import HeroSlider from "@/components/home/HeroSliderClient";
 import StudioCategories from "@/components/home/StudioCategories";
 
 import FeaturedStudios from "@/components/home/FeaturedStudios";

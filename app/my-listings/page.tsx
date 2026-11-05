@@ -44,7 +44,8 @@ export default function MyListingsPage() {
     if (deletingId) return;
     setDeletingId(id);
     try {
-      const res = await fetch(`http://localhost:3001/studios/${id}`, { method: "DELETE" });
+      await fetch("/api/auth/jwt", { credentials: "include" });
+      const res = await fetch(`http://localhost:3001/studios/${id}`, { method: "DELETE", credentials: "include" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Delete failed");
       setStudios((prev) => prev.filter((s) => s._id !== id));
