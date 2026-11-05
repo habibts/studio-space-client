@@ -242,4 +242,3 @@ function StudioDetailsContent() {
   );
 }
 
-export const dynamic = "force-dynamic";

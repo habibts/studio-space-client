@@ -8,8 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-import { Suspense } from "react";
-
 export default function EditStudioPage() {
   return (
     <Suspense fallback={null}>
@@ -85,4 +83,3 @@ function EditStudioContent() {
     </main>
   );
 }
-export const dynamic = "force-dynamic";
