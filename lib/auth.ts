@@ -6,7 +6,15 @@ import { mongodbAdapter } from "@better-auth/mongo-adapter";
 const client = new MongoClient(process.env.MONGODB_URI as string);
 const db = client.db("studiospace");
 
+const trustedOrigins = [
+  "http://localhost:3000",
+  "https://studio-space-client-three.vercel.app",
+  process.env.BETTER_AUTH_URL,
+].filter(Boolean) as string[];
+
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
+  trustedOrigins,
   database: mongodbAdapter(db, {
     client,
   }),
