@@ -5,8 +5,7 @@ const PRIVATE_PREFIXES = ["/dashboard", "/studios/add-studio", "/my-listings", "
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isStudioDetail = /^\/studios\/[^/]+$/.test(pathname);
-  const isPrivate = isStudioDetail || PRIVATE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const isPrivate = PRIVATE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
   if (!isPrivate) return NextResponse.next();
 
   const sessionToken = request.cookies.get("better-auth.session_token")?.value;
