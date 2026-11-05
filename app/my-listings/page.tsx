@@ -45,7 +45,7 @@ export default function MyListingsPage() {
     setDeletingId(id);
     try {
       await fetch("/api/auth/jwt", { credentials: "include" });
-      const res = await fetch(`https://studio-space-server-kduo.vercel.app/studios/${id}`, { method: "DELETE", credentials: "include" });
+      const res = await fetch(`https://studio-space-server-delta.vercel.app/studios/${id}`, { method: "DELETE", credentials: "include" });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Delete failed");
       setStudios((prev) => prev.filter((s) => s._id !== id));
@@ -63,7 +63,7 @@ export default function MyListingsPage() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(`https://studio-space-server-kduo.vercel.app/my-studios?email=${encodeURIComponent(user.email)}`);
+      const res = await fetch(`https://studio-space-server-delta.vercel.app/my-studios?email=${encodeURIComponent(user.email)}`);
       if (!res.ok) throw new Error("Failed to fetch studios");
       const data = await res.json();
       setStudios(data.studios || data || []);

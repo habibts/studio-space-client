@@ -73,7 +73,7 @@ export default function EditStudioForm({ studio }: EditStudioFormProps) {
   const onSubmit = async (data: StudioFormValues) => {
     setIsSubmitting(true);
     try {
-      const res = await fetch(`https://studio-space-server-kduo.vercel.app/studios/${studio._id}`, {
+      const res = await fetch(`https://studio-space-server-delta.vercel.app/studios/${studio._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, hostName: user?.name, hostEmail: user?.email }),

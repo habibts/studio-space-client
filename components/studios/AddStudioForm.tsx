@@ -126,7 +126,7 @@ export default function AddStudioForm() {
             console.log("Sending studio data:", studioData);
 
             await fetch("/api/auth/jwt", { credentials: "include" });
-        const res = await fetch("https://studio-space-server-kduo.vercel.app/add-studio", {
+        const res = await fetch("https://studio-space-server-delta.vercel.app/add-studio", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",

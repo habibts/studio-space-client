@@ -52,7 +52,7 @@ export default function MyBookingsPage() {
     if (confirmingId) return;
     setConfirmingId(id);
     try {
-      const res = await fetch(`https://studio-space-server-kduo.vercel.app/bookings/${id}/confirm`, {
+      const res = await fetch(`https://studio-space-server-delta.vercel.app/bookings/${id}/confirm`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -71,7 +71,7 @@ export default function MyBookingsPage() {
     if (completingId) return;
     setCompletingId(id);
     try {
-      const res = await fetch(`https://studio-space-server-kduo.vercel.app/bookings/${id}/complete`, {
+      const res = await fetch(`https://studio-space-server-delta.vercel.app/bookings/${id}/complete`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -88,7 +88,7 @@ export default function MyBookingsPage() {
     if (cancellingId) return;
     setCancellingId(id);
     try {
-      const res = await fetch(`https://studio-space-server-kduo.vercel.app/bookings/${id}/cancel`, {
+      const res = await fetch(`https://studio-space-server-delta.vercel.app/bookings/${id}/cancel`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user?.email }),
@@ -108,7 +108,7 @@ export default function MyBookingsPage() {
     if (deletingId) return;
     setDeletingId(id);
     try {
-      const res = await fetch(`https://studio-space-server-kduo.vercel.app/bookings/${id}`, {
+      const res = await fetch(`https://studio-space-server-delta.vercel.app/bookings/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -129,7 +129,7 @@ export default function MyBookingsPage() {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(`https://studio-space-server-kduo.vercel.app/my-bookings?email=${encodeURIComponent(user.email)}`);
+      const res = await fetch(`https://studio-space-server-delta.vercel.app/my-bookings?email=${encodeURIComponent(user.email)}`);
       if (!res.ok) throw new Error("Failed to fetch bookings");
       const data = await res.json();
       setBookings(data.bookings || data || []);

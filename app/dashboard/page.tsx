@@ -28,8 +28,8 @@ export default function DashboardPage() {
       setLoading(true);
       setError(null);
       const [sRes, bRes] = await Promise.all([
-        fetch(`https://studio-space-server-kduo.vercel.app/my-studios?email=${encodeURIComponent(user.email)}`),
-        fetch(`https://studio-space-server-kduo.vercel.app/my-bookings?email=${encodeURIComponent(user.email)}`),
+        fetch(`https://studio-space-server-delta.vercel.app/my-studios?email=${encodeURIComponent(user.email)}`),
+        fetch(`https://studio-space-server-delta.vercel.app/my-bookings?email=${encodeURIComponent(user.email)}`),
       ]);
       if (!sRes.ok || !bRes.ok) throw new Error("Failed to load dashboard");
       const sData = await sRes.json();
