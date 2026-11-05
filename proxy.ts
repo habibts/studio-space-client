@@ -5,13 +5,16 @@ const PRIVATE_PREFIXES = ["/dashboard", "/studios/add-studio", "/my-listings", "
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isPrivate = PRIVATE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const isStudioDetail = /^\/studios\/[^/]+$/.test(pathname);
+  const isPrivate = isStudioDetail || PRIVATE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
   if (!isPrivate) return NextResponse.next();
 
-  const sessionToken = request.cookies.get("better-auth.session_token")?.value;
+  const sessionToken =
+    request.cookies.get("better-auth.session_token")?.value ||
+    request.cookies.get("__Secure-better-auth.session_token")?.value;
   if (!sessionToken) {
     const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
+    loginUrl.searchParams.set("callbackUrl", pathname + request.nextUrl.search);
     return NextResponse.redirect(loginUrl);
   }
   return NextResponse.next();
