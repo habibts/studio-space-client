@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -40,10 +40,6 @@ function LoginContent() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
 
-  useEffect(() => {
-    const val = sessionStorage.getItem("studioSocialLoading");
-    if (val) setSocialLoading(val);
-  }, []);
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -138,8 +134,7 @@ function LoginContent() {
           <Button variant="outline" type="button" className="w-full" disabled={!!socialLoading} onClick={async () => {
             if (socialLoading) return;
             setSocialLoading("google");
-            sessionStorage.setItem("studioSocialLoading", "google");
-            try {
+                        try {
               await authClient.signIn.social({ provider: "google", callbackURL: "/" });
             } catch (err) {
               toast.error(err instanceof Error ? err.message : "Something went wrong");
@@ -154,8 +149,7 @@ function LoginContent() {
           <Button variant="outline" type="button" className="w-full" disabled={!!socialLoading} onClick={async () => {
             if (socialLoading) return;
             setSocialLoading("github");
-            sessionStorage.setItem("studioSocialLoading", "github");
-            try {
+                        try {
               await authClient.signIn.social({ provider: "github", callbackURL: "/" });
             } catch (err) {
               toast.error(err instanceof Error ? err.message : "Something went wrong");
