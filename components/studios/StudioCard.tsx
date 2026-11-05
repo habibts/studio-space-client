@@ -39,7 +39,7 @@ export default function StudioCard({ studio }: StudioCardProps) {
   const { _id, title, category, hourlyRate, location, imageUrl, rating } = studio;
 
   return (
-    <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg">
+    <Card className="h-full overflow-hidden rounded-2xl border border-[#F3E8D0] bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <CardHeader className="p-0">
         <div className="relative aspect-[4/3] w-full overflow-hidden">
           <Image
@@ -51,7 +51,7 @@ export default function StudioCard({ studio }: StudioCardProps) {
             className="object-cover transition-transform duration-300 group-hover/card:scale-105"
             priority={false}
           />
-          <Badge className="absolute left-3 top-3 bg-white/90 text-foreground backdrop-blur-sm hover:bg-white/90">
+          <Badge className="absolute left-3 top-3 bg-[#F59E0B] text-white backdrop-blur-sm hover:bg-[#F59E0B]">
             {category}
           </Badge>
         </div>
@@ -59,7 +59,7 @@ export default function StudioCard({ studio }: StudioCardProps) {
 
       <CardContent className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="line-clamp-2 text-lg font-semibold leading-tight">
+          <h3 className="line-clamp-2 text-lg font-semibold leading-tight text-card-foreground">
             {title}
           </h3>
           {typeof rating === "number" && rating > 0 ? (
@@ -79,14 +79,14 @@ export default function StudioCard({ studio }: StudioCardProps) {
         </div>
 
         <div className="mt-auto pt-2">
-          <p className="text-lg font-semibold text-foreground">
+          <p className="text-lg font-semibold text-[#F59E0B]">
             ${hourlyRate} <span className="text-sm font-normal text-muted-foreground">/ hr</span>
           </p>
         </div>
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
-        <Link href={`/studios/${_id}`} className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+        <Link href={`/studios/${_id}`} className="inline-flex w-full items-center justify-center rounded-md bg-[#F59E0B] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#D97706]">
           View Details
         </Link>
       </CardFooter>

@@ -6,10 +6,10 @@ import {
   Aperture,
   Mail,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/toast";
 
 const XLogo = ({ size = 18 }: { size?: number }) => (
   <svg
@@ -70,14 +70,14 @@ export default function Footer() {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.add({ title: "Invalid email", description: "Please enter a valid email address.", type: "error" });
+      toast.error("Please enter a valid email address.");
       return;
     }
     setLoading(true);
     setTimeout(() => {
-      toast.add({ title: "Subscribed!", description: "You're on the list. Stay tuned for updates.", type: "success" });
       setEmail("");
       setLoading(false);
+      toast.success("Thanks for your interest in StudioSpace!");
     }, 400);
   };
 
@@ -88,11 +88,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F59E0B] text-white">
                 <Aperture size={25} />
               </div>
               <span className="text-2xl font-bold tracking-tight text-white">
-                Studio<span className="text-amber-500">Space</span>
+                Studio<span className="text-[#F59E0B]">Space</span>
               </span>
             </Link>
             <p className="text-sm leading-relaxed text-gray-400">
@@ -109,7 +109,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={s.name}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-800 text-gray-300 transition hover:bg-amber-500 hover:text-white"
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-800 text-gray-300 transition hover:bg-[#F59E0B] hover:text-white"
                   >
                     <Icon size={18} />
                   </a>
@@ -128,7 +128,7 @@ export default function Footer() {
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="text-sm text-gray-400 transition hover:text-amber-400"
+                    className="text-sm text-gray-400 transition hover:text-[#F59E0B]"
                   >
                     {l.name}
                   </Link>
@@ -147,7 +147,7 @@ export default function Footer() {
                 <li key={category.value}>
                   <Link
                     href={`/studios?category=${encodeURIComponent(category.value)}`}
-                    className="text-sm text-gray-400 transition hover:text-amber-400"
+                    className="text-sm text-gray-400 transition hover:text-[#F59E0B]"
                   >
                     {category.name}
                   </Link>
@@ -181,7 +181,7 @@ export default function Footer() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-amber-500 text-white hover:bg-amber-600"
+                className="w-full bg-[#F59E0B] text-white hover:bg-[#D97706]"
               >
                 <Mail size={16} className="mr-2" />
                 {loading ? "Subscribing..." : "Subscribe"}
@@ -195,10 +195,10 @@ export default function Footer() {
             © 2026 StudioSpace. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="/terms" className="text-xs text-gray-500 transition hover:text-amber-400">
+            <Link href="/terms" className="text-xs text-gray-500 transition hover:text-[#F59E0B]">
               Terms of Service
             </Link>
-            <Link href="/privacy" className="text-xs text-gray-500 transition hover:text-amber-400">
+            <Link href="/privacy" className="text-xs text-gray-500 transition hover:text-[#F59E0B]">
               Privacy Policy
             </Link>
           </div>

@@ -44,14 +44,14 @@ export default function FeaturedStudios() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-              Featured Studios
+            <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+              Featured <span className="text-[#F59E0B]">Studios</span>
             </h2>
             <p className="text-muted-foreground">
               Discover our handpicked creative spaces for your next project.
             </p>
           </div>
-          <Link href="/studios" className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent group">
+          <Link href="/studios" className="inline-flex items-center gap-2 rounded-md border border-[#F59E0B] bg-[#F59E0B] px-4 py-2 text-sm font-medium text-[#17213B] hover:bg-[#D97706] group">
             Explore All Studios
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
           </Link>

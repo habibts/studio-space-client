@@ -14,8 +14,8 @@ export default function StudioCategories() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-10 text-center">
-        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-          Browse by Studio Categories
+        <h2 className="text-3xl font-bold tracking-tight text-[#17213B] md:text-4xl">
+          Browse by <span className="text-[#F59E0B]">Studio Categories</span>
         </h2>
         <p className="mt-3 text-muted-foreground">
           Find the perfect space for your creative needs
@@ -40,7 +40,7 @@ export default function StudioCategories() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500/90">
+                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-[#F59E0B]/90">
                     <Icon size={20} />
                   </div>
                   <h3 className="text-lg font-semibold">{c.title}</h3>

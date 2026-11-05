@@ -165,23 +165,23 @@ export default function StudioDetailsPage() {
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+                    <h1 className="text-3xl font-bold tracking-tight text-[#17213B] md:text-4xl">
                       {studio.title}
                     </h1>
-                    <Badge>{studio.category}</Badge>
+                    <Badge className="bg-[#FFFBEB] text-[#17213B] border border-[#F3E8D0]">{studio.category}</Badge>
                   </div>
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <MapPin className="size-4" />
-                    <span>{studio.location}</span>
+                  <div className="flex items-center gap-1.5 text-[#64748B]">
+                    <MapPin className="size-4 text-[#F59E0B]" />
+                    <span className="text-[#17213B]">{studio.location}</span>
                   </div>
                 </div>
               </div>
 
               <Separator />
 
-              <div className="space-y-3">
-                <h2 className="text-xl font-semibold">About this space</h2>
-                <p className="leading-relaxed text-muted-foreground">
+              <div className="space-y-3 border-t border-[#F3E8D0] pt-6">
+                <h2 className="text-xl font-semibold text-[#17213B]">About this space</h2>
+                <p className="leading-relaxed text-[#64748B]">
                   {studio.description || "No description available."}
                 </p>
               </div>
@@ -189,11 +189,11 @@ export default function StudioDetailsPage() {
               <Separator />
 
               <div className="space-y-3">
-                <h2 className="text-xl font-semibold">Amenities</h2>
+                <h2 className="text-xl font-semibold text-[#17213B]">Amenities</h2>
                 {studio.amenities && studio.amenities.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {studio.amenities.map((amenity, index) => (
-                      <Badge key={index} variant="outline">
+                      <Badge key={index} className="border border-[#F3E8D0] bg-[#FFFBEB] text-[#17213B]">
                         {amenity}
                       </Badge>
                     ))}

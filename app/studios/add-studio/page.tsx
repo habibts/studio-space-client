@@ -2,10 +2,10 @@ import AddStudioForm from "@/components/studios/AddStudioForm";
 
 export default function AddStudioPage() {
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-10 md:px-8">
+    <main className="min-h-screen bg-background px-4 py-10 md:px-8">
       <div className="mx-auto max-w-5xl space-y-8">
         <div>
-          <p className="mb-2 text-sm font-semibold text-cyan-600">
+          <p className="mb-2 text-sm font-semibold text-primary">
             STUDIO MANAGEMENT
           </p>
 

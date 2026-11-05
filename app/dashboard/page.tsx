@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { toast } from "@/components/ui/toast";
 import { Building2, Calendar, PlusCircle, Search, List, Clock } from "lucide-react";
 
 interface Studio { _id: string; title: string; category: string; hourlyRate: number; imageUrl: string; }
@@ -39,7 +38,6 @@ export default function DashboardPage() {
       setBookings(bData.bookings || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load dashboard");
-      toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load dashboard", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -56,7 +54,7 @@ export default function DashboardPage() {
 
   if (isPending || loading) {
     return (
-      <main className="min-h-screen bg-[#F3FBF4] px-4 py-10">
+      <main className="min-h-screen bg-background px-4 py-10">
         <div className="mx-auto max-w-7xl space-y-6">
           <Skeleton className="h-10 w-64" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -69,11 +67,11 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <main className="min-h-screen bg-[#F3FBF4] px-4 py-10">
+      <main className="min-h-screen bg-background px-4 py-10">
         <div className="mx-auto max-w-7xl flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">
-          <p className="text-lg font-semibold text-[#26352B]">Unable to Load Dashboard</p>
-          <p className="text-[#26352B]/70">Something went wrong while loading dashboard data.</p>
-          <Button onClick={fetchAll} className="mt-2 bg-[#05893E] text-white hover:bg-[#047a36]">Try Again</Button>
+          <p className="text-lg font-semibold text-foreground">Unable to Load Dashboard</p>
+          <p className="text-muted-foreground">Something went wrong while loading dashboard data.</p>
+          <Button onClick={fetchAll} className="mt-2 bg-[#F59E0B] text-foreground hover:bg-[#D97706]">Try Again</Button>
         </div>
       </main>
     );
@@ -83,23 +81,23 @@ export default function DashboardPage() {
   const confirmed = bookings.filter((b) => b.status === "Confirmed").length;
 
   return (
-    <main className="min-h-screen bg-[#F3FBF4] px-4 py-10">
+    <main className="min-h-screen bg-background px-4 py-10">
       <div className="mx-auto max-w-7xl space-y-8">
         <div>
-          <h1 className="text-3xl font-bold text-[#26352B]">Welcome Back, {user?.name}!</h1>
-          <p className="text-[#26352B]/70">{user?.email}</p>
-          <p className="mt-2 text-sm text-[#26352B]/60">Here's an overview of your StudioSpace activity.</p>
+          <h1 className="text-3xl font-bold text-foreground">Welcome Back, {user?.name}!</h1>
+          <p className="text-muted-foreground">{user?.email}</p>
+          <p className="mt-2 text-sm text-[#64748B]">Here's an overview of your StudioSpace activity.</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="bg-[#FAFCFA]"><CardContent className="p-6"><p className="text-sm text-[#26352B]/60">Total Studios</p><p className="text-3xl font-bold text-[#05893E]">{studios.length}</p></CardContent></Card>
-          <Card className="bg-[#FAFCFA]"><CardContent className="p-6"><p className="text-sm text-[#26352B]/60">Total Bookings</p><p className="text-3xl font-bold text-[#05893E]">{bookings.length}</p></CardContent></Card>
-          <Card className="bg-[#FAFCFA]"><CardContent className="p-6"><p className="text-sm text-[#26352B]/60">Pending Bookings</p><p className="text-3xl font-bold text-[#05893E]">{pending}</p></CardContent></Card>
-          <Card className="bg-[#FAFCFA]"><CardContent className="p-6"><p className="text-sm text-[#26352B]/60">Confirmed Bookings</p><p className="text-3xl font-bold text-[#05893E]">{confirmed}</p></CardContent></Card>
+          <Card className="bg-card"><CardContent className="p-6"><p className="text-sm text-[#64748B]">Total Studios</p><p className="text-3xl font-bold text-[#F59E0B]">{studios.length}</p></CardContent></Card>
+          <Card className="bg-card"><CardContent className="p-6"><p className="text-sm text-[#64748B]">Total Bookings</p><p className="text-3xl font-bold text-[#F59E0B]">{bookings.length}</p></CardContent></Card>
+          <Card className="bg-card"><CardContent className="p-6"><p className="text-sm text-[#64748B]">Pending Bookings</p><p className="text-3xl font-bold text-[#F59E0B]">{pending}</p></CardContent></Card>
+          <Card className="bg-card"><CardContent className="p-6"><p className="text-sm text-[#64748B]">Confirmed Bookings</p><p className="text-3xl font-bold text-[#F59E0B]">{confirmed}</p></CardContent></Card>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Link href="/studios/add-studio"><Button className="w-full bg-[#05893E] text-white hover:bg-[#047a36]"><PlusCircle className="mr-2 h-4 w-4" />Add New Studio</Button></Link>
+          <Link href="/studios/add-studio"><Button className="w-full bg-[#F59E0B] text-foreground hover:bg-[#D97706]"><PlusCircle className="mr-2 h-4 w-4" />Add New Studio</Button></Link>
           <Link href="/studios"><Button variant="outline" className="w-full"><Search className="mr-2 h-4 w-4" />Explore Studios</Button></Link>
           <Link href="/my-listings"><Button variant="outline" className="w-full"><List className="mr-2 h-4 w-4" />My Studio Listings</Button></Link>
           <Link href="/my-bookings"><Button variant="outline" className="w-full"><Calendar className="mr-2 h-4 w-4" />My Bookings</Button></Link>
@@ -107,23 +105,23 @@ export default function DashboardPage() {
 
         <div>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-[#26352B]">Recent Studio Listings</h2>
-            <Link href="/my-listings" className="text-sm text-[#05893E] hover:underline">View All</Link>
+            <h2 className="text-xl font-semibold text-foreground">Recent Studio Listings</h2>
+            <Link href="/my-listings" className="text-sm text-[#F59E0B] hover:underline">View All</Link>
           </div>
           {studios.length === 0 ? (
-            <p className="text-sm text-[#26352B]/60">No studios yet. <Link href="/studios/add-studio" className="text-[#05893E] hover:underline">Add your first studio</Link></p>
+            <p className="text-sm text-[#64748B]">No studios yet. <Link href="/studios/add-studio" className="text-[#F59E0B] hover:underline">Add your first studio</Link></p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {studios.slice(0, 3).map((s) => (
                 <Link key={s._id} href={`/studios/${s._id}`}>
-                  <Card className="overflow-hidden bg-[#FAFCFA]">
+                  <Card className="overflow-hidden bg-card">
                     <div className="relative aspect-[4/3] w-full overflow-hidden">
                       <Image src={s.imageUrl} alt={s.title} fill unoptimized className="object-cover" />
                     </div>
                     <CardContent className="p-4">
-                      <h3 className="font-semibold text-[#26352B]">{s.title}</h3>
-                      <p className="text-sm text-[#26352B]/60">{s.category}</p>
-                      <p className="mt-1 text-sm font-semibold text-[#05893E]">${s.hourlyRate}/hr</p>
+                      <h3 className="font-semibold text-foreground">{s.title}</h3>
+                      <p className="text-sm text-[#64748B]">{s.category}</p>
+                      <p className="mt-1 text-sm font-semibold text-[#F59E0B]">${s.hourlyRate}/hr</p>
                     </CardContent>
                   </Card>
                 </Link>
@@ -134,23 +132,23 @@ export default function DashboardPage() {
 
         <div>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-[#26352B]">Recent Bookings</h2>
-            <Link href="/my-bookings" className="text-sm text-[#05893E] hover:underline">View All</Link>
+            <h2 className="text-xl font-semibold text-foreground">Recent Bookings</h2>
+            <Link href="/my-bookings" className="text-sm text-[#F59E0B] hover:underline">View All</Link>
           </div>
           {bookings.length === 0 ? (
-            <p className="text-sm text-[#26352B]/60">No bookings yet. <Link href="/studios" className="text-[#05893E] hover:underline">Explore studios</Link></p>
+            <p className="text-sm text-[#64748B]">No bookings yet. <Link href="/studios" className="text-[#F59E0B] hover:underline">Explore studios</Link></p>
           ) : (
             <div className="space-y-3">
               {bookings.slice(0, 5).map((b) => (
-                <Card key={b._id} className="bg-[#FAFCFA]">
+                <Card key={b._id} className="bg-card">
                   <CardContent className="flex items-center justify-between p-4">
                     <div>
-                      <p className="font-semibold text-[#26352B]">{b.studioTitle}</p>
-                      <p className="text-sm text-[#26352B]/60">{b.bookingDate} • {b.startTime}–{b.endTime}</p>
+                      <p className="font-semibold text-foreground">{b.studioTitle}</p>
+                      <p className="text-sm text-[#64748B]">{b.bookingDate} • {b.startTime}–{b.endTime}</p>
                     </div>
                     <div className="text-right">
                       <Badge>{b.status}</Badge>
-                      <p className="mt-1 text-sm font-semibold text-[#05893E]">${b.totalPrice}</p>
+                      <p className="mt-1 text-sm font-semibold text-[#F59E0B]">${b.totalPrice}</p>
                     </div>
                   </CardContent>
                 </Card>

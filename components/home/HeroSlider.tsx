@@ -51,10 +51,13 @@ const slides = [
 
 export default function HeroSlider() {
   return (
-    <section className="relative w-full">
+    <section className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl bg-gradient-to-br from-[#FFFBEB] via-transparent to-[#F3E8D0]">
+      <div className="absolute inset-0 pointer-events-none opacity-40">
+        <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-[#F59E0B]/20 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#F3E8D0] blur-3xl" />
+      </div>
       <Swiper
         modules={[Autoplay, Pagination, Navigation, EffectFade]}
-        effect="fade"
         loop
         speed={1000}
         autoplay={{
@@ -87,7 +90,7 @@ export default function HeroSlider() {
               <div className="absolute inset-0 bg-black/50" />
 
               {/* Content */}
-              <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-12 lg:px-16">
+              <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 md:px-12 lg:px-16">
                 <div className="max-w-3xl text-white">
                   <p className="mb-5 text-sm font-semibold tracking-[0.25em] text-white/80">
                     {slide.subtitle}
@@ -105,7 +108,7 @@ export default function HeroSlider() {
                   <div className="flex flex-wrap gap-4">
                     <Link
                       href="/studios"
-                      className="inline-flex items-center gap-2 rounded-full bg-[#16A1BF] px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#12849D]"
+                      className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B] px-7 py-4 text-sm font-semibold text-[#17213B] transition-all duration-300 hover:bg-[#D97706]"
                     >
                       {slide.primaryButton}
                       <ArrowRight className="size-4" />
@@ -159,7 +162,7 @@ export default function HeroSlider() {
         .hero-swiper .swiper-pagination-bullet-active {
           width: 30px;
           border-radius: 10px;
-          background: #16a1bf;
+          background: #F59E0B;
           opacity: 1;
         }
       `}</style>

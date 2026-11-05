@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Calendar, DollarSign, Shield, Users } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/dialog";
 import { Studio } from "@/components/studios/StudioCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { toast } from "@/components/ui/toast";
 
 interface BookingCardProps {
   studio: Studio;
@@ -44,11 +44,9 @@ export default function BookingCard({ studio }: BookingCardProps) {
 
   const handleConfirmBooking = async () => {
     if (!bookingDate || !startTime || !endTime || hours <= 0) {
-      toast.add({ title: "Validation error", description: "Please fill all booking fields correctly.", type: "error" });
       return;
     }
     if (bookingDate < today) {
-      toast.add({ title: "Validation error", description: "Booking date cannot be in the past.", type: "error" });
       return;
     }
     if (submitting) return;
@@ -77,14 +75,13 @@ export default function BookingCard({ studio }: BookingCardProps) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Booking failed");
-      toast.add({ title: "Booking confirmed", description: "Your booking was created successfully.", type: "success" });
       setBookingOpen(false);
       setBookingDate("");
       setStartTime("");
       setEndTime("");
+      toast.success("Booking request submitted successfully!");
     } catch (err) {
-      toast.add({ title: "Booking failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
-    } finally {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
       setSubmitting(false);
     }
   };
@@ -117,7 +114,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
         <Separator />
 
         <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
-          <DialogTrigger className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
+          <DialogTrigger className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#F59E0B] px-4 py-3 text-sm font-medium text-[#17213B] transition-colors hover:bg-[#D97706]">
             <Calendar className="mr-2 size-4" />
             Book Workspace Now
           </DialogTrigger>

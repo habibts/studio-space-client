@@ -64,10 +64,10 @@ function StudiosContent() {
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-            Explore Studios
+          <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+            Explore <span className="text-[#F59E0B]">Studios</span>
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-[#64748B]">
             Discover creative spaces for your next project
           </p>
         </div>

@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import { Eye, EyeOff, Image as ImageIcon, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Image as ImageIcon, Loader2, Mail, User } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 const GoogleIcon = () => (
@@ -50,18 +50,16 @@ export default function RegisterPage() {
     if (pwError) newErrors.password = pwError;
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
-      toast.add({ title: "Validation error", description: "Please fix the highlighted fields.", type: "error" });
       return;
     }
     setLoading(true);
     try {
       const res = await authClient.signUp.email({ name: form.name, email: form.email, password: form.password });
       if (res.error) throw new Error(res.error.message || "Registration failed");
-      toast.add({ title: "Welcome!", description: "Account created successfully.", type: "success" });
+      toast.success("Account created successfully!");
       router.push("/");
     } catch (err) {
-      toast.add({ title: "Registration failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
-    } finally {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
       setLoading(false);
     }
   };
@@ -150,6 +148,7 @@ export default function RegisterPage() {
           </div>
 
           <Button type="submit" disabled={loading} className="w-full bg-amber-500 text-white hover:bg-amber-600">
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {loading ? "Creating account..." : "Register"}
           </Button>
         </form>
@@ -168,7 +167,6 @@ export default function RegisterPage() {
             try {
               await authClient.signIn.social({ provider: "google", callbackURL: "/" });
             } catch (err) {
-              toast.add({ title: "Google signup failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
             }
           }}>
             <GoogleIcon />
@@ -178,7 +176,6 @@ export default function RegisterPage() {
             try {
               await authClient.signIn.social({ provider: "github", callbackURL: "/" });
             } catch (err) {
-              toast.add({ title: "GitHub signup failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
             }
           }}>
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.21 3.44 9.63 8.21 11.19.6.11.82-.25.82-.56 0-.27-.01-1-.02-1.96-3.34.71-4.04-1.58-4.04-1.58-.55-1.36-1.34-1.72-1.34-1.72-1.09-.73.08-.72.08-.72 1.21.08 1.84 1.21 1.84 1.21 1.07 1.8 2.8 1.28 3.49.98.11-.76.42-1.28.76-1.57-2.67-.29-5.47-1.31-5.47-5.85 0-1.29.47-2.35 1.24-3.18-.12-.3-.54-1.51.12-3.15 0 0 1.01-.32 3.3 1.2a11.5 11.5 0 0 1 6 0c2.29-1.52 3.3-1.2 3.3-1.2.66 1.64.24 2.85.12 3.15.77.83 1.24 1.89 1.24 3.18 0 4.55-2.81 5.56-5.49 5.84.43.36.82 1.08.82 2.18 0 1.57-.02 2.84-.02 3.23 0 .31.22.68.83.56A12.04 12.04 0 0 0 24 12.29C24 5.78 18.63.5 12 .5z" /></svg>

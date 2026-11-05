@@ -10,7 +10,6 @@ import {
   Menu,
   X,
   Aperture,
-  Heart,
   Sun,
   Moon,
   UserRound,
@@ -33,17 +32,17 @@ export default function Navbar() {
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/95">
+    <header className="sticky top-0 z-50 w-full border-b border-purple-200/60 bg-white/90 backdrop-blur-xl shadow-sm dark:border-amber-900/40 dark:bg-gray-950/90">
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F59E0B] text-white">
             <Aperture size={25} />
           </div>
 
           <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Studio<span className="text-amber-500">Space</span>
+            Studio<span className="text-[#F59E0B]">Space</span>
           </span>
         </Link>
 
@@ -62,8 +61,8 @@ export default function Navbar() {
                 href={link.href}
                 className={`text-sm font-medium transition-colors ${
                   isActive
-                    ? "border-b-2 border-[#05893E] pb-1 font-semibold text-[#05893E]"
-                    : "text-gray-600 hover:text-amber-500 dark:text-gray-300 dark:hover:text-amber-400"
+                    ? "rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-[#F59E0B] dark:bg-amber-900/40 dark:text-amber-300"
+                    : "text-gray-600 hover:text-[#F59E0B] dark:text-gray-300 dark:hover:text-amber-300"
                 }`}
               >
                 {link.name}
@@ -82,14 +81,6 @@ export default function Navbar() {
             {isDark ? <Sun size={20} /> : <Moon size={20} />}
           </button>
 
-          <Link
-            href="/wishlist"
-            aria-label="Wishlist"
-            className="rounded-full p-2 text-gray-600 transition hover:bg-gray-100 hover:text-amber-500 dark:text-gray-300 dark:hover:bg-gray-800"
-          >
-            <Heart size={20} />
-          </Link>
-
           {isPending ? (
             <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200 dark:bg-gray-800" />
           ) : user ? (
@@ -98,7 +89,7 @@ export default function Navbar() {
             <>
               <Link
                 href="/login"
-                className="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-amber-500 hover:text-amber-500 dark:border-gray-700 dark:text-gray-200"
+                className="flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:border-[#F59E0B] hover:text-[#F59E0B] dark:border-gray-700 dark:text-gray-200"
               >
                 <UserRound size={17} />
                 Login
@@ -106,7 +97,7 @@ export default function Navbar() {
 
               <Link
                 href="/register"
-                className="rounded-full bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-600"
+                className="rounded-full bg-[#F59E0B] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#D97706]"
               >
                 Register
               </Link>
@@ -133,7 +124,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="text-sm font-medium text-gray-700 transition hover:text-amber-500 dark:text-gray-300"
+                className="text-sm font-medium text-gray-700 transition hover:text-[#F59E0B] dark:text-gray-300"
               >
                 {link.name}
               </Link>
@@ -150,14 +141,6 @@ export default function Navbar() {
                 {isDark ? "Light Mode" : "Dark Mode"}
               </button>
 
-              <Link
-                href="/wishlist"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300"
-              >
-                <Heart size={18} />
-                Wishlist
-              </Link>
             </div>
 
             <Link
@@ -171,7 +154,7 @@ export default function Navbar() {
             <Link
               href="/register"
               onClick={() => setIsOpen(false)}
-              className="rounded-full bg-amber-500 py-2.5 text-center text-sm font-semibold text-white hover:bg-amber-600"
+              className="rounded-full bg-[#F59E0B] py-2.5 text-center text-sm font-semibold text-white hover:bg-[#D97706]"
             >
               Get Started
             </Link>

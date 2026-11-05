@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Calendar, Clock, MapPin } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { toast } from "@/components/ui/toast";
 
 interface Booking {
   _id: string;
@@ -60,9 +60,9 @@ export default function MyBookingsPage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Confirmation failed");
       setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: "Confirmed" } : b)));
-      toast.add({ title: "Confirmed", description: "Booking confirmed successfully.", type: "success" });
+      toast.success("Booking confirmed successfully!");
     } catch (err) {
-      toast.add({ title: "Confirmation failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setConfirmingId(null);
     }
@@ -79,9 +79,7 @@ export default function MyBookingsPage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Completion failed");
       setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: "Completed" } : b)));
-      toast.add({ title: "Completed", description: "Booking completed successfully.", type: "success" });
     } catch (err) {
-      toast.add({ title: "Completion failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
     } finally {
       setCompletingId(null);
     }
@@ -98,9 +96,9 @@ export default function MyBookingsPage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Cancellation failed");
       setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: "Cancelled" } : b)));
-      toast.add({ title: "Cancelled", description: "Booking cancelled successfully.", type: "success" });
+      toast.success("Booking cancelled successfully!");
     } catch (err) {
-      toast.add({ title: "Cancellation failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setCancellingId(null);
     }
@@ -118,9 +116,9 @@ export default function MyBookingsPage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Deletion failed");
       setBookings((prev) => prev.filter((b) => b._id !== id));
-      toast.add({ title: "Deleted", description: "Booking deleted successfully.", type: "success" });
+      toast.success("Booking deleted successfully!");
     } catch (err) {
-      toast.add({ title: "Deletion failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setDeletingId(null);
     }
@@ -137,7 +135,6 @@ export default function MyBookingsPage() {
       setBookings(data.bookings || data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load bookings");
-      toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load bookings", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -169,7 +166,7 @@ export default function MyBookingsPage() {
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">My Bookings</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">My <span className="text-[#F59E0B]">Bookings</span></h1>
           <p className="text-muted-foreground">Track and manage all your studio reservations.</p>
         </div>
 
@@ -186,7 +183,7 @@ export default function MyBookingsPage() {
               key={f}
               onClick={() => setFilter(f)}
               className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-                filter === f ? "bg-amber-500 text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"
+                filter === f ? "bg-[#F59E0B] text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
               {f}
@@ -214,7 +211,7 @@ export default function MyBookingsPage() {
           <div className="flex min-h-[300px] flex-col items-center justify-center space-y-3 text-center">
             <p className="text-lg font-semibold">No Bookings Yet</p>
             <p className="text-muted-foreground">You haven't booked any studio yet. Explore studios and book your workspace.</p>
-            <a href="/studios" className="mt-4 inline-flex items-center justify-center rounded-md bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">Explore Studios</a>
+            <a href="/studios" className="mt-4 inline-flex items-center justify-center rounded-md bg-[#F59E0B] px-4 py-2 text-sm font-medium text-white hover:bg-[#D97706]">Explore Studios</a>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

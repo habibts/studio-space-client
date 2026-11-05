@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { MapPin, Pencil, Search, Trash2, Users } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { toast } from "@/components/ui/toast";
 
 interface Studio {
   _id: string;
@@ -49,9 +49,9 @@ export default function MyListingsPage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Delete failed");
       setStudios((prev) => prev.filter((s) => s._id !== id));
-      toast.add({ title: "Deleted", description: "Studio deleted successfully.", type: "success" });
+      toast.success("Studio deleted successfully!");
     } catch (err) {
-      toast.add({ title: "Delete failed", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setDeletingId(null);
     }
@@ -69,7 +69,6 @@ export default function MyListingsPage() {
       setStudios(data.studios || data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load studios");
-      toast.add({ title: "Error", description: err instanceof Error ? err.message : "Failed to load studios", type: "error" });
     } finally {
       setLoading(false);
     }

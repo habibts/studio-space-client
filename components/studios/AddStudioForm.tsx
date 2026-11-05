@@ -6,7 +6,6 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useForm, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "@/components/ui/toast";
 
 import {
     Building2,
@@ -42,6 +41,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -110,7 +110,6 @@ export default function AddStudioForm() {
 
     const onSubmit = async (data: StudioFormValues) => {
         if (!user) {
-            toast.add({ title: "Please log in", description: "You must be logged in to add a studio.", type: "error" });
             return;
         }
         setIsSubmitting(true);
@@ -143,7 +142,8 @@ export default function AddStudioForm() {
                 throw new Error(result.message || "Failed to add studio");
             }
 
-            toast.add({ title: "Studio added successfully!", type: "success" });
+            toast.success("Studio created successfully!");
+
 
             console.log("Saved Studio:", result);
 
@@ -152,12 +152,7 @@ export default function AddStudioForm() {
 
         } catch (error) {
             console.error("Error submitting studio:", error);
-
-            toast.add({
-                title: "Failed to add studio",
-                description: error instanceof Error ? error.message : "Something went wrong!",
-                type: "error",
-            });
+            toast.error(error instanceof Error ? error.message : "Something went wrong");
         } finally {
             setIsSubmitting(false);
         }
@@ -174,7 +169,7 @@ export default function AddStudioForm() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <Building2 className="h-5 w-5 text-cyan-600" />
+                            <Building2 className="h-5 w-5 text-primary" />
                             Basic Information
                         </CardTitle>
                         <CardDescription>
@@ -263,7 +258,7 @@ export default function AddStudioForm() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <DollarSign className="h-5 w-5 text-green-600" />
+                            <DollarSign className="h-5 w-5 text-primary" />
                             Pricing & Capacity
                         </CardTitle>
                         <CardDescription>
@@ -512,7 +507,7 @@ export default function AddStudioForm() {
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-cyan-600 text-white hover:bg-cyan-700"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
                     >
                         <Save className="mr-2 h-4 w-4" />
                         {isSubmitting ? "Saving..." : "Save Studio"}

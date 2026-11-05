@@ -5,17 +5,17 @@ import { useRouter } from "next/navigation";
 import { useForm, type Resolver } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "@/components/ui/toast";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Building2, DollarSign, ImagePlus, MapPin, Save, Users } from "lucide-react";
 import { Wifi, Car, Wind, Lightbulb, Volume2, Shirt, Utensils, Camera } from "lucide-react";
@@ -80,11 +80,10 @@ export default function EditStudioForm({ studio }: EditStudioFormProps) {
       });
       const result = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(result.message || "Failed to update studio");
-      toast.add({ title: "Studio updated successfully!", type: "success" });
+      toast.success("Studio updated successfully!");
       router.push("/my-listings");
     } catch (err) {
-      toast.add({ title: "Failed to update studio", description: err instanceof Error ? err.message : "Something went wrong", type: "error" });
-    } finally {
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
       setIsSubmitting(false);
     }
   };
