@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/backend/:path*",
-        destination: `${process.env.BACKEND_URL || "http://localhost:3001"}/:path*`,
+        destination: `${process.env.BACKEND_URL || "https://studio-space-server-ruby.vercel.app"}/:path*`,
       },
     ];
   },
