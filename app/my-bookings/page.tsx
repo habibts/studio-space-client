@@ -288,6 +288,27 @@ export default function MyBookingsPage() {
                       </Button>
                     </div>
                   )}
+                  {b.status === "Completed" && (
+                    <AlertDialog>
+                      <AlertDialogTrigger className="inline-flex w-full items-center justify-center rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90">
+                        Delete Booking
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete booking?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to permanently delete this completed booking?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(b._id)} disabled={deletingId === b._id}>
+                            {deletingId === b._id ? "Deleting..." : "Delete"}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                   {b.status === "Cancelled" && (
                     <AlertDialog>
                       <AlertDialogTrigger className="inline-flex w-full items-center justify-center rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90">
