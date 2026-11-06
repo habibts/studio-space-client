@@ -109,6 +109,7 @@ export default function MyBookingsPage() {
     if (deletingId) return;
     setDeletingId(id);
     try {
+      await fetch("/api/auth/jwt", { credentials: "include" });
       const res = await fetch(api(`/bookings/${id}`), {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
