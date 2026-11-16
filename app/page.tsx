@@ -14,7 +14,7 @@ export default function Home() {
   }, []);
   return (
     <div>
-      <HeroSlider />
+        <HeroSlider />
       <FeaturedStudios />
       <StudioCategories />
       <HowBookingWorks />

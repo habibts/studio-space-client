@@ -58,10 +58,11 @@ const slides = [
 
 export default function HeroSlider() {
   return (
-    <section
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section
       aria-label="Featured creative studios"
-      className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl bg-gradient-to-br from-[#FFFBEB] via-transparent to-[#F3E8D0]"
-    >
+      className="relative mx-auto mt-6 w-full overflow-hidden rounded-3xl bg-linear-to-br from-[#FFFBEB] via-transparent to-[#F3E8D0] md:mt-8"
+      >
       <div className="absolute inset-0 pointer-events-none opacity-40">
         <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-[#F59E0B]/20 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#F3E8D0] blur-3xl" />
@@ -181,5 +182,6 @@ export default function HeroSlider() {
         }
       `}</style>
     </section>
+    </div>
   );
 }

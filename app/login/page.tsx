@@ -55,7 +55,17 @@ function LoginContent() {
     try {
       const res = await authClient.signIn.email({ email, password });
       if (res.error) throw new Error(res.error.message || "Login failed");
-      toast.success("Logged in successfully.");
+
+      const user = res.data?.user;
+      toast.success(`Welcome back${user?.name ? `, ${user.name}` : ""}!`, {
+        description: `You're signed in as ${user?.email ?? email}.`,
+        duration: 6000,
+        action: {
+          label: "My bookings",
+          onClick: () => router.push("/my-bookings"),
+        },
+      });
+
       router.push(callbackUrl);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
