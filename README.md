@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StudioSpace
+Peer-to-Peer Creative Workspace & Production Studio Sharing Platform.
 
-## Getting Started
+## 1. Live Website
+Include the actual deployed client URL:
+https://studio-space-client-steel.vercel.app/
 
-First, run the development server:
+## 2. Project Overview
+Write a meaningful introduction explaining how StudioSpace connects creative professionals with studio owners and allows users to discover, book, and manage creative spaces.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 3. Key Features
+Include at least 5 meaningful bullet points based on actual implemented functionality, such as:
+- User authentication with email/password.
+- Google and GitHub social authentication.
+- Browse and explore creative studios.
+- Search and filter studios by category.
+- View detailed studio information.
+- Add, edit, and delete studio listings.
+- Book creative workspaces.
+- Booking status management (Pending, Confirmed, Completed, Cancelled).
+- Booking overlap prevention.
+- User dashboard and personal booking/listing management.
+- Responsive design.
+- Dark and light theme support.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Only include features that are actually implemented.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 4. Technology Stack
+Inspect package.json and the backend dependencies.
+Document the actual technologies used by the client and server.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Possible technologies to verify:
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Better Auth
+- Express.js
+- MongoDB
+- Sonner
+- Swiper
+- Vercel
 
-## Learn More
+Do not list any technology that is not actually used.
 
-To learn more about Next.js, take a look at the following resources:
+## 5. Local Installation & Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Provide complete instructions for running both client and server locally.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Client:
+- Clone the repository.
+- Install dependencies.
+- Configure the client .env.local file.
+- Run npm run dev.
+- Client runs at http://localhost:3000.
 
-## Deploy on Vercel
+Backend:
+- Navigate to the backend folder.
+- Install dependencies.
+- Configure the backend .env file.
+- Run the actual backend development/start script.
+- Backend runs at http://localhost:3001.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Inspect actual package.json scripts and environment variable names before documenting them.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Do not include real secrets or API keys in README.
+Provide safe placeholder values and explain which environment variables are required.
+
+## 6. Environment Variables
+Document actual required environment variable names for:
+- MongoDB connection.
+- Better Auth.
+- Google OAuth.
+- GitHub OAuth.
+- JWT.
+- Backend API URL.
+
+Never expose real secret values.
+
+## 7. Examiner Test Credentials
+
+Create a clearly visible section for examiner login credentials.
+
+Inspect the project and use existing verified test credentials if available.
+
+If credentials are not available:
+Use clearly marked placeholders:
+- Email: [Provide examiner email]
+- Password: [Provide examiner password]
+
+Do not invent credentials or claim placeholder credentials work.
+
+## 8. Project Structure
+Briefly explain the actual client and server folder structure.
+
+## 9. Author
+Include author information only if it already exists in the project.
+
+FINAL REQUIREMENTS:
+- Write professional, clean, readable Markdown.
+- Use proper headings, bullet points, and code blocks.
+- Ensure there are at least 5 feature bullet points.
+- Verify all URLs and setup commands against the existing project.
+- Do not modify files other than README.md.
+- Report the README file location and summarize what was documented.

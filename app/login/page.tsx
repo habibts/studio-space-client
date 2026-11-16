@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { markLoginSuccess } from "@/components/shared/LoginSuccessToast";
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
@@ -145,6 +146,7 @@ function LoginContent() {
             if (socialLoading) return;
             setSocialLoading("google");
                         try {
+              markLoginSuccess("google");
               await authClient.signIn.social({ provider: "google", callbackURL: "/" });
             } catch (err) {
               toast.error(err instanceof Error ? err.message : "Something went wrong");
@@ -160,6 +162,7 @@ function LoginContent() {
             if (socialLoading) return;
             setSocialLoading("github");
                         try {
+              markLoginSuccess("github");
               await authClient.signIn.social({ provider: "github", callbackURL: "/" });
             } catch (err) {
               toast.error(err instanceof Error ? err.message : "Something went wrong");

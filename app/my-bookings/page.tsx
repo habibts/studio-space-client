@@ -53,6 +53,7 @@ export default function MyBookingsPage() {
     if (confirmingId) return;
     setConfirmingId(id);
     try {
+      await fetch("/api/auth/jwt", { credentials: "include" });
       const res = await fetch(api(`/bookings/${id}/confirm`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -77,6 +78,7 @@ export default function MyBookingsPage() {
     if (completingId) return;
     setCompletingId(id);
     try {
+      await fetch("/api/auth/jwt", { credentials: "include" });
       const res = await fetch(api(`/bookings/${id}/complete`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -85,7 +87,11 @@ export default function MyBookingsPage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Completion failed");
       setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: "Completed" } : b)));
+      toast.success("Booking completed successfully!", {
+        description: "Thanks for using StudioSpace — we hope you enjoyed your session.",
+      });
     } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not complete the booking. Please try again.");
     } finally {
       setCompletingId(null);
     }
