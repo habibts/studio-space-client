@@ -75,7 +75,12 @@ export default function BookingCard({ studio }: BookingCardProps) {
         body: JSON.stringify(bookingData),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.message || "Booking failed");
+      if (!res.ok) {
+        if (res.status === 409) {
+          throw new Error("This time slot is already booked. Please choose another time.");
+        }
+        throw new Error(data?.message || "Booking failed");
+      }
       setBookingOpen(false);
       setBookingDate("");
       setStartTime("");

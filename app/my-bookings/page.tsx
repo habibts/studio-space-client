@@ -59,7 +59,12 @@ export default function MyBookingsPage() {
         credentials: "include",
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.message || "Confirmation failed");
+      if (!res.ok) {
+        if (res.status === 409) {
+          throw new Error("This time slot is already booked. Please choose another time.");
+        }
+        throw new Error(data?.message || "Confirmation failed");
+      }
       setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, status: "Confirmed" } : b)));
       toast.success("Booking confirmed successfully!");
     } catch (err) {

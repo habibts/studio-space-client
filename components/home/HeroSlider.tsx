@@ -4,7 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
+import {
+  A11y,
+  Autoplay,
+  EffectFade,
+  Keyboard,
+  Navigation,
+  Pagination,
+} from "swiper/modules";
 
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -18,7 +25,7 @@ const slides = [
     id: 1,
     image:
       "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1920&q=80",
-    subtitle: "DISCOVER YOUR NEXT ADVENTURE",
+    subtitle: "BUILT FOR VISUAL STORYTELLERS",
     title: "Find Your Perfect Creative Space",
     description:
       "Discover professional studios designed for photography, video production, and creative projects.",
@@ -29,7 +36,7 @@ const slides = [
     id: 2,
     image:
       "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1920&q=80",
-    subtitle: "FIND YOUR PERFECT GETAWAY",
+    subtitle: "MAKE EVERY TAKE COUNT",
     title: "Bring Your Creative Vision to Life",
     description:
       "From podcast rooms to music suites, find everything you need to create something amazing.",
@@ -40,7 +47,7 @@ const slides = [
     id: 3,
     image:
       "https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=1920&q=80",
-    subtitle: "SHARE YOUR SPACE WITH THE WORLD",
+    subtitle: "ROOM FOR YOUR BIGGEST IDEAS",
     title: "Your Space. Your Creativity. Your Story.",
     description:
       "Book inspiring creative spaces and turn your ideas into reality.",
@@ -51,19 +58,26 @@ const slides = [
 
 export default function HeroSlider() {
   return (
-    <section className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl bg-gradient-to-br from-[#FFFBEB] via-transparent to-[#F3E8D0]">
+    <section
+      aria-label="Featured creative studios"
+      className="relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl bg-gradient-to-br from-[#FFFBEB] via-transparent to-[#F3E8D0]"
+    >
       <div className="absolute inset-0 pointer-events-none opacity-40">
         <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-[#F59E0B]/20 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#F3E8D0] blur-3xl" />
       </div>
       <Swiper
-        modules={[Autoplay, Pagination, Navigation, EffectFade]}
+        modules={[A11y, Autoplay, EffectFade, Keyboard, Navigation, Pagination]}
+        effect="fade"
+        fadeEffect={{ crossFade: true }}
         loop
         speed={1000}
         autoplay={{
           delay: 5000,
           disableOnInteraction: false,
+          pauseOnMouseEnter: true,
         }}
+        keyboard={{ enabled: true, onlyInViewport: true }}
         pagination={{
           clickable: true,
         }}
@@ -71,7 +85,7 @@ export default function HeroSlider() {
           prevEl: ".hero-prev",
           nextEl: ".hero-next",
         }}
-        className="hero-swiper h-[600px] w-full md:h-[650px]"
+        className="hero-swiper h-[560px] w-full sm:h-[600px] md:h-[650px]"
       >
         {slides.map((slide) => (
           <SwiperSlide key={slide.id}>
@@ -105,10 +119,10 @@ export default function HeroSlider() {
                   </p>
 
                   {/* CTA Buttons */}
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                     <Link
                       href="/studios"
-                      className="inline-flex items-center gap-2 rounded-full bg-[#F59E0B] px-7 py-4 text-sm font-semibold text-[#17213B] transition-all duration-300 hover:bg-[#D97706]"
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-[#F59E0B] px-7 py-4 text-sm font-semibold text-[#17213B] transition-all duration-300 hover:bg-[#D97706]"
                     >
                       {slide.primaryButton}
                       <ArrowRight className="size-4" />
@@ -116,7 +130,7 @@ export default function HeroSlider() {
 
                     <Link
                       href="/studios"
-                      className="inline-flex items-center gap-2 rounded-full border border-white px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-black"
+                      className="inline-flex items-center justify-center gap-2 rounded-full border border-white px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-black"
                     >
                       {slide.secondaryButton}
                       <ArrowRight className="size-4" />
