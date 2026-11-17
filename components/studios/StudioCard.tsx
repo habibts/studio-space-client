@@ -70,7 +70,15 @@ export default function StudioCard({ studio }: StudioCardProps) {
               <Star className="size-3 fill-amber-400 text-amber-400" />
               <span>{rating.toFixed(1)}</span>
             </Badge>
-          ) : null}
+          ) : (
+            <Badge
+              variant="outline"
+              className="flex shrink-0 items-center gap-1 border-muted-foreground/25 text-muted-foreground"
+            >
+              <Star className="size-3" />
+              <span>New</span>
+            </Badge>
+          )}
         </div>
 
         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">

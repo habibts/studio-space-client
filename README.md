@@ -5,6 +5,12 @@ Peer-to-Peer Creative Workspace & Production Studio Sharing Platform.
 Include the actual deployed client URL:
 https://studio-space-client-steel.vercel.app/
 
+## 🔗 Project Repositories
+
+- Client Repository: https://github.com/habibts/studio-space-client
+- Server Repository: https://github.com/habibts/studio-space-server
+
+
 ## 2. Project Overview
 Write a meaningful introduction explaining how StudioSpace connects creative professionals with studio owners and allows users to discover, book, and manage creative spaces.
 
