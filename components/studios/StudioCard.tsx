@@ -29,6 +29,12 @@ export interface Studio {
   hostEmail?: string;
   createdAt?: string;
   rating?: number | null;
+  reviews?: {
+    name?: string;
+    rating?: number;
+    comment?: string;
+    date?: string;
+  }[];
 }
 
 interface StudioCardProps {

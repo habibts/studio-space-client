@@ -180,6 +180,21 @@ export default function HeroSlider() {
           background: #F59E0B;
           opacity: 1;
         }
+
+        /*
+         * Swiper's effect-fade CSS sets pointer-events: none on every slide
+         * and only re-enables it on .swiper-slide-active. After a client-side
+         * back navigation, Swiper's runtime slide classes are temporarily
+         * absent on all slides, which left every CTA in the hero unclickable
+         * until the next Swiper update (autoplay is paused while hovering).
+         * Inactive slides are translated outside the overflow-hidden
+         * container, so keeping all slides interactive is safe — and every
+         * slide's CTAs point to the same destination anyway.
+         * (.hero-swiper and .swiper-fade live on the SAME container element.)
+         */
+        .hero-swiper.swiper-fade .swiper-slide {
+          pointer-events: auto;
+        }
       `}</style>
     </section>
     </div>

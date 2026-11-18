@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Calendar, DollarSign, Shield, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -31,26 +31,47 @@ export default function BookingCard({ studio }: BookingCardProps) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const inFlightRef = useRef(false);
   const today = new Date().toISOString().split("T")[0];
 
-  const hours =
-    startTime && endTime
+  const calcHours = (start: string, end: string) =>
+    start && end
       ? Math.max(
           0,
-          (new Date(`2000-01-01T${endTime}`).getTime() -
-            new Date(`2000-01-01T${startTime}`).getTime()) /
+          (new Date(`2000-01-01T${end}`).getTime() -
+            new Date(`2000-01-01T${start}`).getTime()) /
             3600000
         )
       : 0;
 
+  const hours = calcHours(startTime, endTime);
+
+  const handleOpenChange = (open: boolean) => {
+    setBookingOpen(open);
+    if (!open) {
+      // Closing the dialog (success, Esc, X or overlay click) always clears the
+      // selected date/times and the submitting flag so no stale set time is
+      // left behind for the next booking.
+      setBookingDate("");
+      setStartTime("");
+      setEndTime("");
+      setSubmitting(false);
+    }
+  };
+
   const handleConfirmBooking = async () => {
-    if (!bookingDate || !startTime || !endTime || hours <= 0) {
+    const totalHours = hours;
+
+    if (!bookingDate || !startTime || !endTime || totalHours <= 0) {
+      toast.error("Please select a booking date, a start time and an end time after the start time");
       return;
     }
     if (bookingDate < today) {
+      toast.error("Booking date cannot be in the past");
       return;
     }
-    if (submitting) return;
+    if (submitting || inFlightRef.current) return;
+    inFlightRef.current = true;
     setSubmitting(true);
     const bookingData = {
       studioId: studio._id,
@@ -61,10 +82,10 @@ export default function BookingCard({ studio }: BookingCardProps) {
       bookingDate,
       startTime,
       endTime,
-      totalHours: hours,
+      totalHours,
       hourlyRate: studio.hourlyRate,
       securityDeposit: studio.securityDeposit || 0,
-      totalPrice: (studio.hourlyRate || 0) * hours + (studio.securityDeposit || 0),
+      totalPrice: (studio.hourlyRate || 0) * totalHours + (studio.securityDeposit || 0),
     };
     try {
       await fetch("/api/auth/jwt", { credentials: "include" });
@@ -81,13 +102,12 @@ export default function BookingCard({ studio }: BookingCardProps) {
         }
         throw new Error(data?.message || "Booking failed");
       }
-      setBookingOpen(false);
-      setBookingDate("");
-      setStartTime("");
-      setEndTime("");
+      handleOpenChange(false);
       toast.success("Booking request submitted successfully!");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      inFlightRef.current = false;
       setSubmitting(false);
     }
   };
@@ -119,7 +139,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
 
         <Separator />
 
-        <Dialog open={bookingOpen} onOpenChange={setBookingOpen}>
+        <Dialog open={bookingOpen} onOpenChange={handleOpenChange}>
           <DialogTrigger className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#F59E0B] px-4 py-3 text-sm font-medium text-[#17213B] transition-colors hover:bg-[#D97706]">
             <Calendar className="mr-2 size-4" />
             Book Workspace Now
@@ -165,7 +185,7 @@ export default function BookingCard({ studio }: BookingCardProps) {
             </div>
             <DialogFooter showCloseButton>
               <Button
-                onClick={handleConfirmBooking}
+                onClick={() => handleConfirmBooking()}
                 disabled={submitting}
                 className="bg-amber-500 text-white hover:bg-amber-600"
               >

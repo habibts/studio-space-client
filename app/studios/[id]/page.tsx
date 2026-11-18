@@ -12,6 +12,7 @@ import {
   Mail,
   User,
   ArrowLeft,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -150,6 +151,25 @@ function StudioDetailsContent() {
     return null;
   }
 
+  const reviews = Array.isArray(studio.reviews) ? studio.reviews : [];
+  const reviewCount = reviews.length;
+  const computedAverage = reviewCount
+    ? reviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0) / reviewCount
+    : 0;
+  const displayRating =
+    typeof studio.rating === "number" && studio.rating > 0 ? studio.rating : computedAverage;
+
+  const formatDate = (value?: string) => {
+    if (!value) return "";
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return value;
+    return parsed.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -230,6 +250,81 @@ function StudioDetailsContent() {
                     <span>{studio.hostEmail || "Not specified"}</span>
                   </div>
                 </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h2 className="text-xl font-semibold text-[#17213B] dark:text-white">
+                    Reviews
+                  </h2>
+                  {reviewCount > 0 && (
+                    <div className="flex items-center gap-2 text-sm text-[#64748B] dark:text-slate-400">
+                      <Star className="size-4 fill-amber-400 text-amber-400" />
+                      <span className="font-medium text-[#17213B] dark:text-white">
+                        {displayRating.toFixed(1)}
+                      </span>
+                      <span>/ 5</span>
+                      <span className="text-muted-foreground">
+                        · {reviewCount} review{reviewCount === 1 ? "" : "s"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {reviewCount === 0 ? (
+                  <div className="rounded-xl border border-dashed border-[#F3E8D0] bg-[#FFFBEB] px-4 py-8 text-center dark:border-gray-700 dark:bg-gray-800/60">
+                    <p className="font-medium text-[#17213B] dark:text-white">No reviews yet</p>
+                    <p className="mt-1 text-sm text-[#64748B] dark:text-slate-400">
+                      Be the first to share your experience with this studio.
+                    </p>
+                  </div>
+                ) : (
+                  <ul className="space-y-4">
+                    {reviews.map((review, index) => (
+                      <li
+                        key={index}
+                        className="rounded-xl border border-[#F3E8D0] bg-card p-4 dark:border-gray-700"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-3">
+                            <span className="flex size-9 items-center justify-center rounded-full bg-amber-100 text-sm font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                              {(review.name || "A").charAt(0).toUpperCase()}
+                            </span>
+                            <div>
+                              <p className="text-sm font-medium text-[#17213B] dark:text-white">
+                                {review.name || "Anonymous"}
+                              </p>
+                              <div className="flex items-center gap-0.5">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <Star
+                                    key={star}
+                                    className={`size-3.5 ${
+                                      star <= Math.round(Number(review.rating) || 0)
+                                        ? "fill-amber-400 text-amber-400"
+                                        : "text-muted-foreground/40"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          {review.date && (
+                            <span className="text-xs text-muted-foreground">
+                              {formatDate(review.date)}
+                            </span>
+                          )}
+                        </div>
+                        {review.comment && (
+                          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-[#64748B] dark:text-slate-300">
+                            {review.comment}
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>
